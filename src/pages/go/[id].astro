@@ -1,0 +1,54 @@
+---
+/**
+ * AFFILIATE REDIRECT
+ *
+ * Static pages generated one per affiliate id. Keeps merchant URLs out of the
+ * HTML source, gives us a single choke point for click tracking, and works on
+ * any static host — no CloudFront Function or Lambda@Edge needed.
+ *
+ * These are noindex + Disallow'd in robots.txt.
+ */
+import { listAffiliateIds, getAffiliate, buildTrackedUrl } from '@data/affiliates';
+
+export function getStaticPaths() {
+  return listAffiliateIds().map((id) => ({ params: { id } }));
+}
+
+const { id } = Astro.params;
+const entry = getAffiliate(id!);
+const destination = buildTrackedUrl(entry);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="refresh" content={`0; url=${destination}`} />
+    <link rel="canonical" href={destination} />
+    <title>Redirecting to {entry.merchant}…</title>
+  </head>
+  <body>
+    <p>
+      Redirecting to {entry.merchant}. If nothing happens,
+      <a href={destination} rel="sponsored nofollow noopener">continue here</a>.
+    </p>
+    <script is:inline define:vars={{ destination, id, merchant: entry.merchant }}>
+      // Fire the click event, then redirect. 400ms ceiling so a blocked
+      // analytics script never strands the visitor.
+      let done = false;
+      const go = () => {
+        if (done) return;
+        done = true;
+        window.location.replace(destination);
+      };
+      if (window.plausible) {
+        window.plausible('affiliate_click', {
+          props: { id, merchant },
+          callback: go,
+        });
+      }
+      setTimeout(go, 400);
+    </script>
+  </body>
+</html>

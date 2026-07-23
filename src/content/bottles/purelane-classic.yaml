@@ -1,0 +1,27 @@
+# Reference entry. Shows the schema in use — copy this shape for new bottles.
+name: Classic Cork-Top Glass Bottle
+brand: Purelane
+priceDisplay: hidden   # Amazon product: price cannot be shown until PA-API. See src/lib/pricing.ts
+rating: 4.8
+tagline: The everyday desk and home bottle done right.
+bestFor: Home & desk
+editorsChoice: true
+features:
+  - Borosilicate glass, zero leaching
+  - Natural cork lid, no plastic contact
+  - Wide mouth for easy cleaning
+image: ../../assets/images/bottles/purelane-classic.jpg
+imageAlt: Clear borosilicate glass water bottle with a natural cork stopper on a white background
+affiliateId: purelane-classic
+material: Borosilicate glass
+capacityOz: 18
+dishwasherSafe: true
+lidType: Cork stopper
+pros:
+  - No plastic touches the water at any point
+  - Wide mouth fits a bottle brush and standard ice cubes
+  - Cork lid does not retain odour the way silicone does
+cons:
+  - Cork swells over time and eventually needs replacing
+  - No insulation, so contents reach room temperature quickly
+  - Heavier than steel and will break if dropped on a hard floor

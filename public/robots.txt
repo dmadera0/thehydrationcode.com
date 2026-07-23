@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Affiliate redirect endpoints must never be crawled or indexed.
+Disallow: /go/
+
+Sitemap: https://thehydrationcode.com/sitemap-index.xml
