@@ -24,33 +24,31 @@ export const HERO_STATS = [
     verified: true,
   },
   {
-    value: '90%',
-    label: 'of bottled water samples contained microplastics',
-    source: 'WHO review',
-    url: '',
-    // TODO: VERIFY. This figure traces to Orb Media (2018), which reported 93%
-    // across 259 bottles, not 90%, and WHO reviewed rather than produced it.
-    // Fix the number and the attribution or cut the stat.
-    verified: false,
+    value: '93%',
+    label: 'of bottled water samples tested showed microplastic contamination',
+    // Corrected from an earlier "90% — WHO review" version: WHO never
+    // produced a contamination-rate figure. The real number traces to Mason,
+    // Welch & Neratko (2018), confirmed by direct fetch of the paper itself.
+    source: 'Frontiers in Chemistry, 2018',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6141690/',
+    verified: true,
   },
   {
     value: '2%',
-    label: 'body-water loss that measurably impairs performance',
-    source: 'Sports Med',
-    url: '',
-    // TODO: VERIFY. Well supported in the literature but needs a specific
-    // citation — journal, authors, year — not a bare journal name.
-    verified: false,
+    label: 'body-water loss that measurably impairs endurance performance',
+    source: 'Cheuvront & Kenefick, Comprehensive Physiology, 2014',
+    url: 'https://doi.org/10.1002/cphy.c130017',
+    verified: true,
   },
   {
-    value: '<10%',
-    label: 'of plastic bottles are recycled into new bottles',
-    source: 'OECD',
-    url: '',
-    // TODO: VERIFY. OECD Global Plastics Outlook reports ~9% of all plastic
-    // recycled; bottle-to-bottle specifically is a different figure. Confirm
-    // which claim we are actually making.
-    verified: false,
+    value: '9%',
+    label: 'of plastic waste is recycled globally',
+    // Corrected from "<10% ... into new bottles": OECD's figure is for all
+    // plastic waste, not bottle-to-bottle recycling specifically — that
+    // narrower claim isn't what the source actually measured.
+    source: 'OECD, 2022',
+    url: 'https://www.circularonline.co.uk/news/9-of-global-plastic-waste-is-recycled-while-22-is-mismanaged-oecd/',
+    verified: true,
   },
 ] as const;
 

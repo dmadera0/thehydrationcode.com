@@ -1,0 +1,224 @@
+---
+/**
+ * The only client-side JS on the homepage. Progressive enhancement: with JS
+ * disabled this is a plain POST to PUBLIC_NEWSLETTER_ENDPOINT (Kit/Beehiiv
+ * handle the redirect); with JS it submits via fetch and swaps in inline
+ * loading/success/error states instead of navigating away.
+ */
+const endpoint = import.meta.env.PUBLIC_NEWSLETTER_ENDPOINT || '';
+---
+
+<div class="newsletter-panel">
+  <div class="icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2.5" y="5" width="19" height="14" rx="2" stroke="white" stroke-width="1.6" />
+      <path d="M3.5 6.5L12 13L20.5 6.5" stroke="white" stroke-width="1.6" stroke-linecap="round" />
+    </svg>
+  </div>
+
+  <h2>The Hydration Code, in your inbox</h2>
+  <p class="subcopy">One email when we publish new research. No spam, ever.</p>
+
+  <form class="newsletter-form" method="POST" action={endpoint || undefined} data-newsletter-form data-endpoint={endpoint}>
+    <div class="honeypot">
+      <label for="nl-company">Company</label>
+      <input type="text" id="nl-company" name="company" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="field-row">
+      <label for="nl-email" class="visually-hidden">Email address</label>
+      <input type="email" id="nl-email" name="email" placeholder="you@example.com" required />
+      <button type="submit" data-submit-btn>
+        <span data-btn-label>Subscribe</span>
+      </button>
+    </div>
+
+    <p class="form-message" role="status" aria-live="polite" data-form-message></p>
+    <p class="reassurance">No spam. Unsubscribe anytime.</p>
+  </form>
+</div>
+
+<script>
+  const form = document.querySelector('[data-newsletter-form]');
+
+  if (form instanceof HTMLFormElement) {
+    const endpoint = form.dataset.endpoint ?? '';
+    const button = form.querySelector('[data-submit-btn]');
+    const buttonLabel = form.querySelector('[data-btn-label]');
+    const message = form.querySelector('[data-form-message]');
+    const email = form.querySelector('#nl-email');
+    const honeypot = form.querySelector('#nl-company');
+
+    const setMessage = (text: string, state: string) => {
+      if (!(message instanceof HTMLElement)) return;
+      message.textContent = text;
+      message.dataset.state = state;
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!(button instanceof HTMLButtonElement) || !(email instanceof HTMLInputElement)) return;
+      if (honeypot instanceof HTMLInputElement && honeypot.value) return; // silently drop bots
+
+      if (!email.checkValidity()) {
+        setMessage('Enter a valid email address.', 'error');
+        return;
+      }
+
+      if (!endpoint) {
+        setMessage("Sign-up isn't live yet — check back soon.", 'error');
+        return;
+      }
+
+      button.disabled = true;
+      if (buttonLabel) buttonLabel.textContent = 'Subscribing…';
+      setMessage('', '');
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        if (!response.ok) throw new Error('Request failed');
+        setMessage("You're on the list. Check your inbox to confirm.", 'success');
+        form.reset();
+      } catch {
+        setMessage('Something went wrong. Try again in a moment.', 'error');
+      } finally {
+        button.disabled = false;
+        if (buttonLabel) buttonLabel.textContent = 'Subscribe';
+      }
+    });
+  }
+</script>
+
+<style>
+  .newsletter-panel {
+    max-width: 36rem;
+    margin-inline: auto;
+    padding: 3rem var(--spacing-gutter);
+    border-radius: var(--radius-panel);
+    background-color: var(--color-brand);
+    color: var(--color-surface);
+    text-align: center;
+  }
+
+  .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    margin-block-end: 1.25rem;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--color-surface) 15%, transparent);
+  }
+
+  h2 {
+    color: var(--color-surface);
+    font-size: var(--text-section);
+    line-height: var(--text-section--line-height);
+    letter-spacing: var(--text-section--letter-spacing);
+  }
+
+  .subcopy {
+    margin-block-start: 0.75rem;
+    color: color-mix(in srgb, var(--color-surface) 90%, transparent);
+  }
+
+  .newsletter-form {
+    margin-block-start: 1.75rem;
+  }
+
+  .honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .field-row {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .field-row input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-card);
+    border: 1px solid transparent;
+    /* Tailwind's preflight resets form elements to a transparent
+       background, which would otherwise let this dark green panel bleed
+       through behind the text and fail contrast. */
+    background-color: var(--color-surface);
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+  }
+
+  .field-row input::placeholder {
+    color: var(--color-body);
+  }
+
+  .field-row input:focus-visible {
+    outline: 2px solid var(--color-surface);
+    outline-offset: 2px;
+  }
+
+  .field-row button {
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-card);
+    border: none;
+    background-color: var(--color-accent);
+    color: var(--color-surface);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .field-row button:hover {
+    filter: brightness(1.1);
+  }
+
+  .field-row button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .form-message {
+    min-height: 1.25rem;
+    margin-block-start: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  /* Both states use the same solid surface color and lean on wording, not
+     color, to distinguish success from error — no red/warning token exists
+     in the palette, and color-only signaling fails contrast and a11y both. */
+  .form-message[data-state='error'],
+  .form-message[data-state='success'] {
+    color: var(--color-surface);
+    font-weight: 600;
+  }
+
+  .reassurance {
+    margin-block-start: 0.25rem;
+    font-size: 0.8125rem;
+    color: color-mix(in srgb, var(--color-surface) 85%, transparent);
+  }
+
+  @media (max-width: 30rem) {
+    .field-row {
+      flex-direction: column;
+    }
+  }
+</style>

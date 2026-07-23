@@ -1,8 +1,340 @@
 ---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import { SITE } from '@data/site';
+import ArticleCard from '@components/content/ArticleCard.astro';
+import ProductCard from '@components/product/ProductCard.astro';
+import Disclosure from '@components/product/Disclosure.astro';
+import NewsletterForm from '@components/layout/NewsletterForm.astro';
+import { SITE, HERO_STATS } from '@data/site';
+import { PILLARS, PILLAR_LABELS, PILLAR_DESCRIPTIONS, type Pillar } from '@data/taxonomy';
+import { getPublishedPosts } from '@lib/posts';
+import heroImage from '../assets/images/hero/homepage-hero.jpg';
+
+const featuredPosts = (await getPublishedPosts()).slice(0, 3);
+// Only one seed article exists as of Phase 4 — the grid below is built to
+// hold 1–3 cards cleanly (auto-fill + minmax) so it doesn't need revisiting
+// once more posts land.
+
+const bottles = (await getCollection('bottles')).sort((a, b) => Number(b.data.editorsChoice) - Number(a.data.editorsChoice));
+
+const pillarIcons: Record<Pillar, string> = {
+  'science-of-plastic':
+    '<path d="M9 3h6M10 3v5.5L5.5 17a2 2 0 001.8 3h9.4a2 2 0 001.8-3L14 8.5V3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  'why-glass-matters':
+    '<path d="M12 3c0 0-5.5 6.8-5.5 10.3A5.5 5.5 0 0012 18.8a5.5 5.5 0 005.5-5.5C17.5 9.8 12 3 12 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/>',
+  'health-optimization':
+    '<path d="M20 8.5c0 4-8 10-8 10s-8-6-8-10a4 4 0 017-2.6A4 4 0 0120 8.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="none"/>',
+};
 ---
 
 <BaseLayout title={SITE.name} description={SITE.description}>
-  <h1>{SITE.name}</h1>
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">Research-backed hydration</p>
+        <h1>Know exactly what you're drinking.</h1>
+        <p class="hero-sub">{SITE.description}</p>
+        <div class="hero-ctas">
+          <a href="/research" class="btn-primary">Read the Research</a>
+          <a href="/best-bottles" class="btn-outline">See Best Glass Bottles</a>
+        </div>
+        <p class="trust-line">Every claim cited. No personal brand — just the data.</p>
+      </div>
+      <div class="hero-media">
+        <Image
+          src={heroImage}
+          alt="Glass water bottle photographed against a pale green background"
+          width={720}
+          height={800}
+          loading="eager"
+          fetchpriority="high"
+          class="hero-image"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="stat-band" aria-label="Key research figures">
+    <div class="stat-grid">
+      {HERO_STATS.map((stat) => (
+        <div class="stat">
+          <p class="stat-value">{stat.value}</p>
+          <p class="stat-label">{stat.label}</p>
+          <a class="stat-source source-label" href={stat.url} target="_blank" rel="noopener noreferrer">
+            {stat.source}
+          </a>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-inner">
+      <h2>Start with the research</h2>
+      <div class="featured-grid">
+        {featuredPosts.map((post) => <ArticleCard post={post} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-block alt">
+    <div class="section-inner">
+      <h2>Three questions we answer with evidence</h2>
+      <div class="pillar-grid">
+        {PILLARS.map((pillar) => (
+          <a href={`/research/${pillar}`} class="pillar-card">
+            <span class="pillar-icon" aria-hidden="true" set:html={`<svg viewBox="0 0 24 24" width="28" height="28" xmlns="http://www.w3.org/2000/svg">${pillarIcons[pillar]}</svg>`} />
+            <h3>{PILLAR_LABELS[pillar]}</h3>
+            <p>{PILLAR_DESCRIPTIONS[pillar]}</p>
+            <span class="explore">Explore →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-inner">
+      <h2>Glass bottles we actually recommend</h2>
+      <Disclosure />
+      <div class="bottle-grid">
+        {bottles.map((bottle) => <ProductCard bottle={bottle} />)}
+      </div>
+      <a href="/best-bottles" class="view-all">View all bottles →</a>
+    </div>
+  </section>
+
+  <section class="section-block alt">
+    <div class="section-inner">
+      <NewsletterForm />
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .hero {
+    background-color: var(--color-brand-tint);
+  }
+
+  .hero-inner {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: 4rem var(--spacing-gutter);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    padding: 0.375rem 0.875rem;
+    border-radius: 999px;
+    background-color: var(--color-surface);
+    color: var(--color-brand);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .hero-copy h1 {
+    margin-block-start: 1.25rem;
+    font-size: var(--text-hero);
+    line-height: var(--text-hero--line-height);
+    letter-spacing: var(--text-hero--letter-spacing);
+    font-weight: var(--text-hero--font-weight);
+  }
+
+  .hero-sub {
+    margin-block-start: 1.25rem;
+    font-size: 1.125rem;
+    max-width: 34rem;
+  }
+
+  .hero-ctas {
+    margin-block-start: 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .btn-primary,
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-card);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background-color: var(--color-brand);
+    color: var(--color-surface);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-brand-dark);
+  }
+
+  .btn-outline {
+    border: 1px solid var(--color-brand);
+    color: var(--color-brand);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--color-surface);
+  }
+
+  .trust-line {
+    margin-block-start: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--color-body);
+  }
+
+  .hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-panel);
+  }
+
+  .stat-band {
+    background-color: var(--color-brand);
+    padding: 3rem var(--spacing-gutter);
+  }
+
+  .stat-grid {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .stat-value {
+    font-size: var(--text-stat);
+    line-height: var(--text-stat--line-height);
+    letter-spacing: var(--text-stat--letter-spacing);
+    font-weight: var(--text-stat--font-weight);
+    font-family: var(--font-display);
+    color: var(--color-surface);
+  }
+
+  .stat-label {
+    margin-block-start: 0.375rem;
+    color: color-mix(in srgb, var(--color-surface) 90%, transparent);
+    font-size: 0.9375rem;
+  }
+
+  .stat-source {
+    display: inline-block;
+    margin-block-start: 0.75rem;
+    /* Solid, not muted — this is the site's signature element and the
+       source line must read clearly, not fade into the green. */
+    color: var(--color-surface);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-surface) 60%, transparent);
+  }
+
+  .stat-source:hover {
+    color: var(--color-surface);
+    border-bottom-color: var(--color-surface);
+  }
+
+  .section-block {
+    padding: 4rem var(--spacing-gutter);
+  }
+
+  .section-block.alt {
+    background-color: var(--color-brand-tint);
+  }
+
+  .section-inner {
+    max-width: var(--container-content);
+    margin-inline: auto;
+  }
+
+  .section-inner h2 {
+    font-size: var(--text-section);
+    line-height: var(--text-section--line-height);
+    letter-spacing: var(--text-section--letter-spacing);
+    margin-block-end: 2rem;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 2rem;
+  }
+
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 2rem;
+  }
+
+  .pillar-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.75rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+    background-color: var(--color-surface);
+    text-decoration: none;
+  }
+
+  .pillar-icon {
+    display: inline-flex;
+    color: var(--color-brand);
+  }
+
+  .pillar-card h3 {
+    font-size: var(--text-card);
+    line-height: var(--text-card--line-height);
+    color: var(--color-ink);
+  }
+
+  .pillar-card p {
+    font-size: 0.9375rem;
+  }
+
+  .explore {
+    margin-block-start: auto;
+    font-weight: 600;
+    color: var(--color-brand);
+    font-size: 0.9375rem;
+  }
+
+  .bottle-grid {
+    margin-block-start: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 2rem;
+  }
+
+  .view-all {
+    display: inline-block;
+    margin-block-start: 2rem;
+    font-weight: 600;
+    color: var(--color-brand);
+    text-decoration: none;
+  }
+
+  @media (max-width: 61.25rem) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-media {
+      order: -1;
+    }
+  }
+
+  @media (max-width: 47.9375rem) {
+    .stat-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
