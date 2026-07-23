@@ -1,15 +1,22 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import ArticleCard from '@components/content/ArticleCard.astro';
+import BreadcrumbSchema from '@components/seo/BreadcrumbSchema.astro';
 import { getPublishedPosts } from '@lib/posts';
+import { SITE } from '@data/site';
 
 const posts = await getPublishedPosts();
+const breadcrumbItems = [
+  { name: 'Home', url: SITE.url },
+  { name: 'The Research', url: `${SITE.url}/research` },
+];
 ---
 
 <BaseLayout
   title="The Research"
   description="Research-backed breakdowns of microplastics, plastic leaching, and the science behind better hydration choices. Every claim cited."
 >
+  <BreadcrumbSchema items={breadcrumbItems} />
   <div class="index">
     <h1>The Research</h1>
     <p class="dek">Every article traces back to a named source. No exceptions.</p>

@@ -1,0 +1,37 @@
+---
+/**
+ * Article schema for post pages. No `author` field — this site is faceless
+ * by design (see CLAUDE.md), and publisher (the Organization) is the entity
+ * responsible for the content. Do not add a person here.
+ */
+import type { CollectionEntry } from 'astro:content';
+import JsonLd from './JsonLd.astro';
+import { SITE } from '@data/site';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  url: string;
+}
+
+const { post, url } = Astro.props;
+const { title, dek, publishedAt, updatedAt, heroImage } = post.data;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description: dek,
+  image: new URL(heroImage.src, SITE.url).toString(),
+  datePublished: publishedAt.toISOString(),
+  dateModified: (updatedAt ?? publishedAt).toISOString(),
+  mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  publisher: {
+    '@type': 'Organization',
+    name: SITE.name,
+    url: SITE.url,
+    logo: { '@type': 'ImageObject', url: `${SITE.url}/favicon.svg` },
+  },
+};
+---
+
+<JsonLd schema={schema} />

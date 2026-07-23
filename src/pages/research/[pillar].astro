@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import ArticleCard from '@components/content/ArticleCard.astro';
+import BreadcrumbSchema from '@components/seo/BreadcrumbSchema.astro';
 import { PILLARS, PILLAR_LABELS, PILLAR_DESCRIPTIONS } from '@data/taxonomy';
 import { getPublishedPosts } from '@lib/posts';
+import { SITE } from '@data/site';
 
 export function getStaticPaths() {
   return PILLARS.map((pillar) => ({ params: { pillar } }));
@@ -13,9 +15,16 @@ const label = PILLAR_LABELS[pillar];
 const description = PILLAR_DESCRIPTIONS[pillar];
 
 const posts = (await getPublishedPosts()).filter((post) => post.data.pillar === pillar);
+
+const breadcrumbItems = [
+  { name: 'Home', url: SITE.url },
+  { name: 'The Research', url: `${SITE.url}/research` },
+  { name: label, url: `${SITE.url}/research/${pillar}` },
+];
 ---
 
 <BaseLayout title={label} description={description}>
+  <BreadcrumbSchema items={breadcrumbItems} />
   <div class="index">
     <h1>{label}</h1>
     <p class="dek">{description}</p>

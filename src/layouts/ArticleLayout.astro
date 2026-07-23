@@ -4,8 +4,14 @@ import { getEntries } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import SourceList from '@components/content/SourceList.astro';
+import ArticleCard from '@components/content/ArticleCard.astro';
+import ArticleSchema from '@components/seo/ArticleSchema.astro';
+import FAQSchema from '@components/seo/FAQSchema.astro';
+import BreadcrumbSchema from '@components/seo/BreadcrumbSchema.astro';
 import { PILLAR_LABELS } from '@data/taxonomy';
+import { SITE } from '@data/site';
 import { getReadingMinutes } from '@lib/reading-time';
+import { getPublishedPosts } from '@lib/posts';
 
 interface Props {
   post: CollectionEntry<'posts'>;
@@ -23,9 +29,26 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   timeZone: 'UTC',
 });
 const relatedBottleEntries = relatedBottles?.length ? await getEntries(relatedBottles) : [];
+
+const relatedPosts = (await getPublishedPosts())
+  .filter((p) => p.data.pillar === pillar && p.id !== post.id)
+  .slice(0, 3);
+
+const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
+const ogImage = `/og/posts/${post.id}.png`;
+const breadcrumbItems = [
+  { name: 'Home', url: SITE.url },
+  { name: 'The Research', url: `${SITE.url}/research` },
+  { name: PILLAR_LABELS[pillar], url: `${SITE.url}/research/${pillar}` },
+  { name: title, url: canonicalUrl },
+];
 ---
 
-<BaseLayout title={title} description={dek} ogImage={heroImage.src}>
+<BaseLayout title={title} description={dek} ogImage={ogImage}>
+  <ArticleSchema post={post} url={canonicalUrl} />
+  <BreadcrumbSchema items={breadcrumbItems} />
+  {faq && faq.length > 0 && <FAQSchema faq={faq} />}
+
   <article class="article">
     <header class="article-head">
       <p class="pillar-badge source-label">{PILLAR_LABELS[pillar]}</p>
@@ -60,8 +83,8 @@ const relatedBottleEntries = relatedBottles?.length ? await getEntries(relatedBo
     )}
 
     {relatedBottleEntries.length > 0 && (
-      <section class="related-bottles" aria-labelledby="related-heading">
-        <h2 id="related-heading">Bottles mentioned in this article</h2>
+      <section class="related-bottles" aria-labelledby="related-bottles-heading">
+        <h2 id="related-bottles-heading">Bottles mentioned in this article</h2>
         <ul>
           {relatedBottleEntries.map((bottle) => (
             <li>
@@ -72,6 +95,15 @@ const relatedBottleEntries = relatedBottles?.length ? await getEntries(relatedBo
             </li>
           ))}
         </ul>
+      </section>
+    )}
+
+    {relatedPosts.length > 0 && (
+      <section class="related-posts" aria-labelledby="related-posts-heading">
+        <h2 id="related-posts-heading">More on {PILLAR_LABELS[pillar]}</h2>
+        <div class="related-posts-grid">
+          {relatedPosts.map((relatedPost) => <ArticleCard post={relatedPost} />)}
+        </div>
       </section>
     )}
   </article>
@@ -170,7 +202,8 @@ const relatedBottleEntries = relatedBottles?.length ? await getEntries(relatedBo
   }
 
   .faq h2,
-  .related-bottles h2 {
+  .related-bottles h2,
+  .related-posts h2 {
     font-size: var(--text-card);
     line-height: var(--text-card--line-height);
     margin-block-end: 1.25rem;
@@ -216,5 +249,15 @@ const relatedBottleEntries = relatedBottles?.length ? await getEntries(relatedBo
   .bottle-tagline {
     font-size: 0.875rem;
     color: var(--color-body);
+  }
+
+  .related-posts {
+    margin-block-start: 3rem;
+  }
+
+  .related-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: 1.5rem;
   }
 </style>

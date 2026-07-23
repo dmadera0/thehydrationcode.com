@@ -8,8 +8,11 @@ import PriceSlot from '@components/product/PriceSlot.astro';
 import AffiliateLink from '@components/product/AffiliateLink.astro';
 import ComparisonTable from '@components/content/ComparisonTable.astro';
 import ArticleCard from '@components/content/ArticleCard.astro';
+import ProductReviewSchema from '@components/seo/ProductReviewSchema.astro';
+import BreadcrumbSchema from '@components/seo/BreadcrumbSchema.astro';
 import { resolvePrice } from '@lib/pricing';
 import { getPublishedPosts } from '@lib/posts';
+import { SITE } from '@data/site';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -44,9 +47,20 @@ const price = resolvePrice(bottle.data);
 const relatedPosts = (await getPublishedPosts())
   .filter((post) => post.data.pillar === 'why-glass-matters')
   .slice(0, 3);
+
+const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
+const ogImage = `/og/bottles/${bottle.id}.png`;
+const breadcrumbItems = [
+  { name: 'Home', url: SITE.url },
+  { name: 'Best Bottles', url: `${SITE.url}/best-bottles` },
+  { name, url: canonicalUrl },
+];
 ---
 
-<BaseLayout title={`${name} Review`} description={tagline} ogImage={image.src}>
+<BaseLayout title={`${name} Review`} description={tagline} ogImage={ogImage}>
+  <ProductReviewSchema bottle={bottle} url={canonicalUrl} />
+  <BreadcrumbSchema items={breadcrumbItems} />
+
   <div class="detail">
     <header class="detail-head">
       <p class="brand source-label">{brand}</p>

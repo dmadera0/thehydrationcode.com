@@ -3,14 +3,21 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import ProductCard from '@components/product/ProductCard.astro';
 import Disclosure from '@components/product/Disclosure.astro';
+import BreadcrumbSchema from '@components/seo/BreadcrumbSchema.astro';
+import { SITE } from '@data/site';
 
 const bottles = (await getCollection('bottles')).sort((a, b) => b.data.rating - a.data.rating);
+const breadcrumbItems = [
+  { name: 'Home', url: SITE.url },
+  { name: 'Best Bottles', url: `${SITE.url}/best-bottles` },
+];
 ---
 
 <BaseLayout
   title="Best Glass Bottles"
   description="Glass water bottles we've actually evaluated — real pros and cons, no bottle with a clean sheet."
 >
+  <BreadcrumbSchema items={breadcrumbItems} />
   <div class="hub">
     <h1>Best Glass Bottles</h1>
     <p class="dek">

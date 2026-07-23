@@ -3,6 +3,8 @@ import '../styles/global.css';
 import { SITE } from '@data/site';
 import Header from '@components/layout/Header.astro';
 import Footer from '@components/layout/Footer.astro';
+import OrganizationSchema from '@components/seo/OrganizationSchema.astro';
+import WebSiteSchema from '@components/seo/WebSiteSchema.astro';
 
 interface Props {
   title: string;
@@ -51,6 +53,9 @@ const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
         src="https://plausible.io/js/script.outbound-links.js"
       ></script>
     )}
+
+    <OrganizationSchema />
+    <WebSiteSchema />
   </head>
   <body>
     <a href="#content" class="skip-link">Skip to content</a>

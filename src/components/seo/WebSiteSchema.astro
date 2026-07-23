@@ -1,0 +1,15 @@
+---
+/** Sitewide WebSite schema — rendered once, in BaseLayout. */
+import JsonLd from './JsonLd.astro';
+import { SITE } from '@data/site';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.name,
+  url: SITE.url,
+  description: SITE.description,
+};
+---
+
+<JsonLd schema={schema} />

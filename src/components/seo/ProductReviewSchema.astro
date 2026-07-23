@@ -1,0 +1,50 @@
+---
+/**
+ * Product schema for bottle detail pages — deliberately Review, not
+ * AggregateRating.
+ *
+ * AggregateRating represents an aggregation of independent ratings (user
+ * reviews, survey responses). Our rating is a single editorial score this
+ * site assigns — there's no population of reviewers behind it. Emitting
+ * AggregateRating for that would misrepresent its provenance to Google and
+ * is exactly the kind of structured-data mismatch that draws a manual
+ * action. Review lets us attribute the score honestly to our own
+ * Organization as the reviewing entity, which is what it actually is.
+ */
+import type { CollectionEntry } from 'astro:content';
+import JsonLd from './JsonLd.astro';
+import { SITE } from '@data/site';
+
+interface Props {
+  bottle: CollectionEntry<'bottles'>;
+  url: string;
+}
+
+const { bottle, url } = Astro.props;
+const { name, brand, tagline, image, rating } = bottle.data;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name,
+  brand: { '@type': 'Brand', name: brand },
+  description: tagline,
+  image: new URL(image.src, SITE.url).toString(),
+  url,
+  review: {
+    '@type': 'Review',
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: rating,
+      bestRating: 5,
+      worstRating: 0,
+    },
+    author: {
+      '@type': 'Organization',
+      name: SITE.name,
+    },
+  },
+};
+---
+
+<JsonLd schema={schema} />
