@@ -1,20 +1,27 @@
 ---
+/**
+ * `sourceId` links to the matching numbered entry in the article's
+ * SourceList (#source-N) — the same anchor Citation.astro targets. Sources
+ * live in one place (frontmatter `sources`); components never carry a raw
+ * external URL, which is also what the content-scoped affiliate/link guard
+ * enforces in CI.
+ */
 interface Props {
   value: string;
   label: string;
   source: string;
-  url?: string;
+  sourceId?: number;
 }
 
-const { value, label, source, url } = Astro.props;
+const { value, label, source, sourceId } = Astro.props;
 ---
 
 <figure class="stat-block">
   <p class="value">{value}</p>
   <figcaption>
     <p class="label">{label}</p>
-    {url ? (
-      <a class="source source-label" href={url} target="_blank" rel="noopener noreferrer">{source}</a>
+    {sourceId ? (
+      <a class="source source-label" href={`#source-${sourceId}`}>{source}</a>
     ) : (
       <p class="source source-label">{source}</p>
     )}

@@ -1,18 +1,23 @@
 #!/usr/bin/env node
 /**
- * Fails the build if a merchant domain appears anywhere outside
- * src/data/affiliates.ts. That file is the only place a real merchant URL
- * is allowed to exist — see CLAUDE.md hard rule #2 and docs/AFFILIATE.md.
+ * Two rules, both enforced at build time:
+ *
+ * 1. A known merchant/affiliate-network domain may only appear in
+ *    src/data/affiliates.ts. See CLAUDE.md hard rule #2 and docs/AFFILIATE.md.
+ * 2. Inside src/content/, no external http(s) link may appear except a
+ *    frontmatter `sources` entry (real citations, which must stay direct)
+ *    and the /go/{id} cloaked path. This is what catches a direct-brand
+ *    merchant link that isn't in the registry yet — rule 1's denylist can't,
+ *    since it only knows about domains someone already registered.
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { join, relative, extname } from 'node:path';
 
 const ROOT = join(import.meta.dirname, '..');
 const SRC = join(ROOT, 'src');
+const CONTENT_DIR = join(SRC, 'content');
 const ALLOWED_FILE = join(SRC, 'data', 'affiliates.ts');
 
-// Known affiliate-network domains, plus whatever's actually registered in
-// affiliates.ts (kept in sync automatically instead of hardcoded twice).
 const KNOWN_MERCHANT_DOMAINS = [
   'amazon.com',
   'amzn.to',
@@ -34,25 +39,35 @@ function extractRegisteredDomains(source) {
   return domains;
 }
 
+function lineOf(text, index) {
+  return text.slice(0, index).split('\n').length;
+}
+
 function walk(dir, files = []) {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
     const stats = statSync(full);
     if (stats.isDirectory()) {
       walk(full, files);
-    } else if (SCAN_EXTENSIONS.has(entry.slice(entry.lastIndexOf('.')))) {
+    } else if (SCAN_EXTENSIONS.has(extname(entry))) {
       files.push(full);
     }
   }
   return files;
 }
 
+/** Strips top-level frontmatter `sources:` blocks — the one place a direct
+ * external URL is expected and required. Matches the key line plus every
+ * subsequent indented line (i.e. the whole YAML block under it). */
+function stripSourcesBlocks(text) {
+  return text.replace(/^sources:\n(?:[ \t]+.*\n?|\n)*/gm, '');
+}
+
 const registrySource = readFileSync(ALLOWED_FILE, 'utf8');
 const forbiddenDomains = new Set([...KNOWN_MERCHANT_DOMAINS, ...extractRegisteredDomains(registrySource)]);
-
 const domainPattern = new RegExp(
   `\\b(${[...forbiddenDomains].map((d) => d.replace(/\./g, '\\.')).join('|')})\\b`,
-  'i',
+  'gi',
 );
 
 const violations = [];
@@ -60,20 +75,33 @@ const violations = [];
 for (const file of walk(SRC)) {
   if (file === ALLOWED_FILE) continue;
   const contents = readFileSync(file, 'utf8');
-  const match = contents.match(domainPattern);
-  if (match) {
-    const line = contents.slice(0, match.index).split('\n').length;
-    violations.push(`${relative(ROOT, file)}:${line} — found "${match[1]}"`);
+  const relPath = relative(ROOT, file);
+
+  // Rule 1: known merchant domains, anywhere outside the registry.
+  for (const match of contents.matchAll(domainPattern)) {
+    violations.push(`${relPath}:${lineOf(contents, match.index)} — merchant domain "${match[1]}"`);
+  }
+
+  // Rule 2: raw external links inside src/content/, outside `sources:`.
+  if (file.startsWith(CONTENT_DIR + '/')) {
+    const withoutSources = stripSourcesBlocks(contents);
+    for (const match of withoutSources.matchAll(/https?:\/\/[^\s"'<>)]+/gi)) {
+      violations.push(
+        `${relPath}:${lineOf(withoutSources, match.index)} — direct external link outside frontmatter sources: "${match[0]}"`,
+      );
+    }
   }
 }
 
 if (violations.length > 0) {
-  console.error('\n✖ Merchant domain guard failed.');
-  console.error('  Raw merchant URLs may only appear in src/data/affiliates.ts.');
-  console.error('  Route through <AffiliateLink> instead. Violations:\n');
+  console.error('\n✖ Affiliate link guard failed.\n');
+  console.error('  Rule 1: raw merchant URLs may only appear in src/data/affiliates.ts.');
+  console.error('  Rule 2: src/content/ may not contain a direct external link outside');
+  console.error('          frontmatter `sources` — route it through <AffiliateLink> or /go/.\n');
+  console.error('  Violations:\n');
   for (const v of violations) console.error(`  - ${v}`);
   console.error('');
   process.exit(1);
 }
 
-console.log('✓ Merchant domain guard passed — no merchant URLs found outside src/data/affiliates.ts.');
+console.log('✓ Affiliate link guard passed.');
