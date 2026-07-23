@@ -1,0 +1,79 @@
+---
+import '../styles/global.css';
+import { SITE } from '@data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const { title, description, ogImage, noindex = false } = Astro.props;
+
+const pageTitle = title === SITE.name ? title : `${title} — ${SITE.name}`;
+const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
+const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    {ogImage && <meta property="og:image" content={new URL(ogImage, SITE.url).toString()} />}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={new URL(ogImage, SITE.url).toString()} />}
+
+    {plausibleDomain && (
+      <script
+        is:inline
+        defer
+        data-domain={plausibleDomain}
+        src="https://plausible.io/js/script.outbound-links.js"
+      ></script>
+    )}
+  </head>
+  <body>
+    <a href="#content" class="skip-link">Skip to content</a>
+    <slot name="header" />
+    <main id="content">
+      <slot />
+    </main>
+    <slot name="footer" />
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background-color: var(--color-brand);
+    color: var(--color-surface);
+    border-radius: var(--radius-card);
+    font-weight: 600;
+    text-decoration: none;
+    transition: top 0.15s ease;
+  }
+
+  .skip-link:focus-visible {
+    top: 1rem;
+  }
+</style>

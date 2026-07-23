@@ -1,0 +1,307 @@
+---
+import { NAV } from '@data/site';
+
+const currentPath = Astro.url.pathname;
+
+function isCurrent(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  return currentPath === href || currentPath.startsWith(`${href}/`);
+}
+---
+
+<header class="site-header">
+  <div class="bar">
+    <a href="/" class="wordmark-link" aria-label="The Hydration Code — home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 2.5C12 2.5 5.5 10.2 5.5 14.7C5.5 18.5 8.4 21.5 12 21.5C15.6 21.5 18.5 18.5 18.5 14.7C18.5 10.2 12 2.5 12 2.5Z"
+            fill="white"
+          />
+        </svg>
+      </span>
+      <span class="wordmark-text">
+        <span class="wordmark">The Hydration Code</span>
+        <span class="kicker source-label">Drink smarter</span>
+      </span>
+    </a>
+
+    <nav aria-label="Primary" class="primary-nav">
+      <ul>
+        {NAV.map((item) => (
+          <li>
+            <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a href="/best-bottles" class="cta">Shop Glass Bottles</a>
+
+    <details class="mobile-nav" data-mobile-nav>
+      <summary class="mobile-toggle" aria-label="Open menu">
+        <span class="hamburger" aria-hidden="true"></span>
+      </summary>
+      <div class="mobile-panel" data-mobile-panel>
+        <div class="mobile-panel-head">
+          <span class="wordmark">The Hydration Code</span>
+          <button type="button" class="mobile-close" data-mobile-close aria-label="Close menu">✕</button>
+        </div>
+        <ul>
+          {NAV.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/best-bottles" class="cta cta-mobile">Shop Glass Bottles</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<script is:inline>
+  (() => {
+    const nav = document.querySelector('[data-mobile-nav]');
+    const panel = document.querySelector('[data-mobile-panel]');
+    const closeBtn = document.querySelector('[data-mobile-close]');
+    if (!nav || !panel || !closeBtn) return;
+    const close = () => { nav.open = false; nav.querySelector('summary')?.focus(); };
+    closeBtn.addEventListener('click', close);
+    nav.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { close(); return; }
+      if (e.key !== 'Tab' || !nav.open) return;
+      const items = panel.querySelectorAll('a, button');
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+    nav.addEventListener('toggle', () => { if (nav.open) closeBtn.focus(); });
+  })();
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: var(--color-surface);
+    border-bottom: 1px solid transparent;
+  }
+
+  /* CSS-only border fade on scroll — no JS, no layout shift (border-width
+     never changes, only its color). Degrades to an always-transparent
+     border in browsers without scroll-driven animation support. */
+  @supports (animation-timeline: scroll()) {
+    .site-header {
+      animation: header-border-in linear;
+      animation-timeline: scroll(root);
+      animation-range: 0 96px;
+    }
+  }
+
+  @keyframes header-border-in {
+    from {
+      border-bottom-color: transparent;
+    }
+    to {
+      border-bottom-color: var(--color-line);
+    }
+  }
+
+  .bar {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: 1rem var(--spacing-gutter);
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .wordmark-link {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    text-decoration: none;
+  }
+
+  .mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    background-color: var(--color-brand);
+    border-radius: var(--radius-card);
+  }
+
+  .wordmark-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+    text-transform: uppercase;
+  }
+
+  .kicker {
+    color: var(--color-brand);
+  }
+
+  .primary-nav {
+    margin-inline-end: auto;
+  }
+
+  .primary-nav ul {
+    display: flex;
+    gap: 1.75rem;
+    list-style: none;
+  }
+
+  .primary-nav a {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-body);
+    text-decoration: none;
+  }
+
+  .primary-nav a:hover {
+    color: var(--color-ink);
+  }
+
+  .primary-nav a[aria-current='page'] {
+    color: var(--color-brand);
+    font-weight: 600;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.625rem 1.25rem;
+    background-color: var(--color-brand);
+    color: var(--color-surface);
+    border-radius: var(--radius-card);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .cta:hover {
+    background-color: var(--color-brand-dark);
+  }
+
+  .mobile-nav {
+    display: none;
+  }
+
+  /* Kill default <details> marker across browsers. */
+  .mobile-toggle {
+    list-style: none;
+  }
+  .mobile-toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .hamburger,
+  .hamburger::before,
+  .hamburger::after {
+    display: block;
+    width: 1.5rem;
+    height: 2px;
+    background-color: var(--color-ink);
+    border-radius: 1px;
+  }
+
+  .hamburger {
+    position: relative;
+  }
+
+  .hamburger::before,
+  .hamburger::after {
+    content: '';
+    position: absolute;
+    left: 0;
+  }
+
+  .hamburger::before {
+    top: -6px;
+  }
+
+  .hamburger::after {
+    top: 6px;
+  }
+
+  .mobile-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background-color: var(--color-surface);
+    padding: var(--spacing-gutter);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .mobile-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .mobile-close {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--color-ink);
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .mobile-panel ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .mobile-panel a {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+
+  .mobile-panel a[aria-current='page'] {
+    color: var(--color-brand);
+  }
+
+  .mobile-panel a.cta-mobile {
+    justify-content: center;
+    color: var(--color-surface);
+  }
+
+  @media (max-width: 47.9375rem) {
+    .primary-nav,
+    .bar > .cta {
+      display: none;
+    }
+
+    .mobile-nav {
+      display: block;
+      margin-inline-start: auto;
+    }
+  }
+</style>

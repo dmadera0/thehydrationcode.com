@@ -1,0 +1,12 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Header from '@components/layout/Header.astro';
+import Footer from '@components/layout/Footer.astro';
+import { SITE } from '@data/site';
+---
+
+<BaseLayout title={SITE.name} description={SITE.description}>
+  <Header slot="header" />
+  <h1>{SITE.name}</h1>
+  <Footer slot="footer" />
+</BaseLayout>

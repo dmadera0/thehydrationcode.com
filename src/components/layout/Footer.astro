@@ -1,0 +1,200 @@
+---
+import { SITE, AFFILIATE_DISCLOSURE_SHORT } from '@data/site';
+import { PILLARS, PILLAR_LABELS } from '@/content.config';
+
+const year = new Date().getFullYear();
+
+const learnLinks = [
+  ...PILLARS.map((pillar) => ({
+    label: PILLAR_LABELS[pillar],
+    href: `/research?pillar=${pillar}`,
+  })),
+  { label: 'The Research', href: '/research' },
+];
+
+const shopLinks = [
+  { label: 'Best Glass Bottles', href: '/best-bottles' },
+  { label: 'Everyday Bottles', href: '/best-bottles' },
+  { label: 'Travel & Sport', href: '/best-bottles' },
+];
+
+const companyLinks = [
+  { label: 'Our Method', href: '/our-method' },
+  { label: 'Affiliate Disclosure', href: '/affiliate-disclosure' },
+  { label: 'Privacy', href: '/privacy' },
+];
+---
+
+<footer class="site-footer">
+  <div class="inner">
+    <div class="lockup">
+      <a href="/" class="wordmark-link" aria-label="The Hydration Code — home">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 2.5C12 2.5 5.5 10.2 5.5 14.7C5.5 18.5 8.4 21.5 12 21.5C15.6 21.5 18.5 18.5 18.5 14.7C18.5 10.2 12 2.5 12 2.5Z"
+              fill="white"
+            />
+          </svg>
+        </span>
+        <span class="wordmark">The Hydration Code</span>
+      </a>
+      <p class="promise">{SITE.promise}</p>
+    </div>
+
+    <nav class="columns" aria-label="Footer">
+      <div class="column">
+        <h2 class="column-title source-label">Learn</h2>
+        <ul>
+          {learnLinks.map((link) => (
+            <li><a href={link.href}>{link.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="column">
+        <h2 class="column-title source-label">Shop</h2>
+        <ul>
+          {shopLinks.map((link) => (
+            <li><a href={link.href}>{link.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="column">
+        <h2 class="column-title source-label">Company</h2>
+        <ul>
+          {companyLinks.map((link) => (
+            <li><a href={link.href}>{link.label}</a></li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="legal">
+    <p class="disclosure">{AFFILIATE_DISCLOSURE_SHORT}</p>
+    <p class="copyright">© {year} {SITE.name}. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: var(--color-brand-tint);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .inner {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: 3.5rem var(--spacing-gutter) 2.5rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr);
+    gap: 3rem;
+  }
+
+  .lockup {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .wordmark-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+
+  .mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex-shrink: 0;
+    background-color: var(--color-brand);
+    border-radius: var(--radius-card);
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+    text-transform: uppercase;
+  }
+
+  .promise {
+    max-width: 26rem;
+    font-size: 0.9375rem;
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .column-title {
+    color: var(--color-body);
+    margin-block-end: 1rem;
+  }
+
+  .column ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .column a {
+    font-size: 0.9375rem;
+    color: var(--color-body);
+    text-decoration: none;
+  }
+
+  .column a:hover {
+    color: var(--color-brand);
+  }
+
+  .legal {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .legal p {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: 0 var(--spacing-gutter);
+  }
+
+  .disclosure {
+    padding-top: 1.5rem;
+    font-size: 0.8125rem;
+    max-width: 44rem;
+  }
+
+  .copyright {
+    padding-block: 0.75rem 1.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-body);
+  }
+
+  @media (max-width: 47.9375rem) {
+    .inner {
+      grid-template-columns: 1fr;
+    }
+
+    .columns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .columns {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+  }
+</style>
