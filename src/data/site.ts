@@ -19,8 +19,10 @@ export const HERO_STATS = [
   {
     value: '240,000',
     label: 'plastic particles per liter of bottled water',
+    // PMC mirror, not the pnas.org DOI page — same paper, freely readable.
+    // The article on this same claim links the identical PMC record.
     source: 'PNAS, 2024',
-    url: 'https://www.pnas.org/doi/10.1073/pnas.2300582121',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10801917/',
     verified: true,
   },
   {
@@ -36,8 +38,13 @@ export const HERO_STATS = [
   {
     value: '2%',
     label: 'body-water loss that measurably impairs endurance performance',
-    source: 'Cheuvront & Kenefick, Comprehensive Physiology, 2014',
-    url: 'https://doi.org/10.1002/cphy.c130017',
+    // Cheuvront & Kenefick (2014, Comprehensive Physiology) is the paper
+    // usually cited for this, but it's paywalled — we could never confirm it
+    // ourselves. James et al. (2019, Sports Medicine) states the identical
+    // ≥2% finding in its own text (confirmed by direct fetch) and is free to
+    // read via PMC, so that's the source actually named and linked here.
+    source: 'James et al., Sports Medicine, 2019',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6901416/',
     verified: true,
   },
   {
@@ -45,9 +52,12 @@ export const HERO_STATS = [
     label: 'of plastic waste is recycled globally',
     // Corrected from "<10% ... into new bottles": OECD's figure is for all
     // plastic waste, not bottle-to-bottle recycling specifically — that
-    // narrower claim isn't what the source actually measured.
+    // narrower claim isn't what the source actually measured. Linked directly
+    // to the OECD PDF itself (extracted and confirmed via pdftotext after
+    // oecd.org blocked automated fetches), not the trade-press writeup that
+    // reported on it.
     source: 'OECD, 2022',
-    url: 'https://www.circularonline.co.uk/news/9-of-global-plastic-waste-is-recycled-while-22-is-mismanaged-oecd/',
+    url: 'https://www.oecd.org/content/dam/oecd/en/publications/support-materials/2022/02/global-plastics-outlook_a653d1c9/Global%20Plastics%20Outlook%20I.pdf',
     verified: true,
   },
 ] as const;

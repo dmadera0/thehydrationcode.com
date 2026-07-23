@@ -50,6 +50,7 @@ Radius: 8px on cards, 12px on panels and images. Soft 1px borders instead of sha
 4. **Affiliate disclosure appears above the first affiliate link on any page that has one.** Footer and dedicated page too. FTC requires it be unavoidable.
 5. **Every bottle lists real cons.** Minimum two. A review with no downsides is an advertisement and readers know it.
 6. **No browser storage APIs** and no client-side JS unless a component genuinely needs it. Ship zero JS by default.
+7. **A citation must link to the source it names, and that source must be readable without payment.** If the authority you're attributing to (OECD, WHO, a journal) has published the claim itself, link that — never a news article or blog reporting on it. If the primary source is paywalled, link an open mirror (PMC, the author's copy, the issuing body's own PDF) or cite a different source you can actually read. Correct-but-unverifiable is treated as unsourced.
 
 ## Conventions
 
