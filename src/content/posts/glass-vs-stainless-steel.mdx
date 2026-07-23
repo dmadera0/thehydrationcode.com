@@ -8,22 +8,21 @@ draft: false
 heroImage: ../../assets/images/posts/glass-vs-stainless-steel.jpg
 heroAlt: Side-by-side illustration of a glass bottle and a stainless steel bottle on a pale green background
 sources:
-  - label: "PNAS, 2024"
-    title: "Rapid single-particle chemical imaging of nanoplastics by SRS microscopy"
-    publisher: "Proceedings of the National Academy of Sciences"
+  - label: "Columbia Mailman, 2024"
+    title: "Bottled Water Can Contain Hundreds of Thousands of Nanoplastics"
+    publisher: "Columbia University Mailman School of Public Health, reporting Qian et al., PNAS 2024"
     year: 2024
-    url: "https://www.pnas.org/doi/10.1073/pnas.2300582121"
-    doi: "10.1073/pnas.2300582121"
+    url: "https://www.publichealth.columbia.edu/news/bottled-water-can-contain-hundreds-thousands-nanoplastics"
   - label: "Applied Geochemistry, 2012"
     title: "Temperature-dependent leaching of chemical elements from mineral water bottle materials"
     publisher: "Applied Geochemistry (Reimann, Birke & Filzmoser)"
     year: 2012
     url: "https://www.sciencedirect.com/science/article/abs/pii/S0883292712001217"
-  - label: "NSF/ANSI 51"
-    title: "NSF/ANSI 51: Food Equipment Materials"
-    publisher: "NSF / American National Standards Institute"
-    year: 2025
-    url: "https://blog.ansi.org/ansi/nsf-ansi-51-2025-food-equipment-materials/"
+  - label: "CWB Group"
+    title: "The Story of Chromium: Part 2"
+    publisher: "Canadian Welding Bureau Group"
+    year: 2024
+    url: "https://www.cwbgroup.org/resources/articles/the-story-of-chromium-part-2"
   - label: "Environmental Health, 2014"
     title: "Estrogenic chemicals often leach from BPA-free plastic products that are replacements for BPA-containing polycarbonate products"
     publisher: "Environmental Health (Bittner, Yang & Stoner)"
@@ -40,9 +39,15 @@ sources:
     publisher: "International Stainless Steel Forum (Team Stainless)"
     year: 2025
     url: "https://worldstainless.org/sustainability/environment/recycling/"
+  - label: "PNAS, 2024 (critique)"
+    title: "Nanoplastics measurements must have appropriate blanks"
+    publisher: "Proceedings of the National Academy of Sciences (Materić)"
+    year: 2024
+    url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11621622/"
+    doi: "10.1073/pnas.2411099121"
 faq:
   - q: "Does glass ever leach chemicals into water?"
-    a: "In trace amounts, at high temperatures. A 2012 Applied Geochemistry study found that admissible drinking-water limits weren't exceeded even after a week at 80°C, though the leaching rate climbs noticeably above roughly 45°C. At room temperature or refrigerated, glass is effectively inert."
+    a: "In trace amounts, and more at higher temperatures. A 2012 Applied Geochemistry study measured this directly; the specific numbers you'll see quoted elsewhere (admissible limits held even at 80°C, leaching accelerating above roughly 45°C) come from secondary sources describing that paper, not from an ability to verify the paywalled original ourselves. At room temperature or refrigerated, glass is effectively inert."
   - q: "Is stainless steel safe for hot drinks?"
     a: "Yes. Food-grade stainless steel (usually stamped 18/8 or 304) meets NSF/ANSI 51 requirements for food-contact equipment and holds up to near-boiling liquids without degrading or reacting."
   - q: "So which one should I actually buy?"
@@ -60,15 +65,19 @@ Start with the material most people are trying to get away from. Bottled water s
 <StatBlock
   value="240,000"
   label="average plastic particles found per liter of bottled water"
-  source="PNAS, 2024"
-  url="https://www.pnas.org/doi/10.1073/pnas.2300582121"
+  source="Columbia Mailman, reporting PNAS 2024"
+  url="https://www.publichealth.columbia.edu/news/bottled-water-can-contain-hundreds-thousands-nanoplastics"
 />
 
 Researchers using a new imaging technique found that the average liter of bottled water contained roughly 240,000 identifiable plastic fragments, with nanoplastics — particles small enough to cross cell membranes — making up about 90% of that count <Citation id={1} />. That single-use plastic is a different animal from the reusable glass or steel bottle sitting on your desk, but it's the baseline most people are comparing against, whether they realize it or not.
 
+<Callout variant="note">
+That 240,000 figure isn't uncontested. A separate paper published in PNAS later in 2024 argued the original study's procedural blanks were contaminated and that its quantification method was "analytically incorrect," calling the resulting particle count fundamentally unreliable <Citation id={7} />. We're citing the number because it's the most-discussed figure in this space and the underlying imaging technique itself isn't in dispute — but treat the precise count as contested, not settled.
+</Callout>
+
 ## Does glass leach anything?
 
-Glass is the more chemically inert of the two materials by a meaningful margin. A 2012 study in *Applied Geochemistry* tested glass and PET mineral-water bottles across a range of temperatures and found that glass does release trace amounts of elements — silica, alkali metals, and others — but even after a full week at 80°C, concentrations stayed under drinking-water admissible limits <Citation id={2} />. The leaching rate does climb meaningfully above roughly 45°C, which is one reason glass bottles aren't typically built for dishwasher-hot cycles or car interiors in summer. {/* NEEDS SOURCE: specific manufacturer guidance on glass bottle max safe temperature */}
+Glass is the more chemically inert of the two materials by a meaningful margin. A 2012 study in *Applied Geochemistry* tested glass and PET mineral-water bottles across a range of temperatures and found that glass releases trace amounts of elements — silica, alkali metals, and others — at a rate that increases with temperature <Citation id={2} />. Secondary sources describing that study report specific figures — concentrations staying under drinking-water admissible limits even after a week at 80°C, with the leaching rate climbing above roughly 45°C — but the paper itself sits behind a paywall we couldn't get past to confirm those exact numbers directly, so treat the specific thresholds as reported-elsewhere rather than independently verified here. {/* NEEDS SOURCE: direct confirmation of the 45°C/80°C figures against the primary paper's own text */}
 
 For anything you'd actually put in a bottle — cold water, room-temperature water, iced tea — glass isn't meaningfully interacting with what's inside it.
 
@@ -78,7 +87,7 @@ Borosilicate glass (the kind most reusable bottles use) is more thermally stable
 
 ## Is stainless steel actually inert?
 
-Food-grade stainless steel is governed by NSF/ANSI 51, the standard that sets minimum requirements for materials used in commercial food equipment, and it specifically requires a minimum 16% chromium content for a steel to qualify as corrosion-resistant <Citation id={3} />. That's the chemistry behind the "18/8" or "304" stamp on the bottom of most steel bottles — 18% chromium, 8% nickel, which is what keeps the surface from reacting with what's inside it.
+Stainless steel is defined by its chromium content: a steel needs a minimum of 10.5% chromium to qualify as stainless at all, which is the threshold at which the alloy can form a self-repairing chromium-oxide layer that resists corrosion <Citation id={3} />. Food-contact equipment specifically is governed by NSF/ANSI 51, the standard that sets minimum public-health and sanitation requirements for materials used in commercial food equipment. {/* NEEDS SOURCE: NSF/ANSI 51 is widely quoted online as requiring 16% chromium specifically, but we couldn't confirm that figure against the standard's own text or any source more authoritative than repeated marketing copy, so we're not asserting it here */} What you'll actually find stamped on the bottom of most steel bottles is "18/8" or "304" — 18% chromium, 8% nickel — comfortably above the minimum and the standard grade for anything meant to hold liquid.
 
 Under normal conditions — water, tea, coffee — a compliant stainless bottle isn't giving up meaningful amounts of metal into your drink. Whether trace nickel exposure from steel drinkware specifically is a concern for nickel-sensitive people is a narrower question than this article can responsibly answer with the sourcing on hand. {/* NEEDS SOURCE: peer-reviewed measurement of nickel leaching specifically from steel water bottles under normal use, not laboratory cookware or cage equipment */}
 
@@ -107,12 +116,12 @@ Neither glass nor stainless steel has this problem, because neither one is a pol
 
 Glass and PET plastic bottles get recycled at almost identical rates in the US — 31.3% for glass containers versus 29.1% for PET bottles and jars, per the same EPA dataset <Citation id={5} />. Neither number is good, and glass's reputation as "infinitely recyclable" doesn't mean much if the collection infrastructure isn't there.
 
-Stainless steel is a different story. Steel scrap has real, standing commercial value, and industry data from the International Stainless Steel Forum puts the end-of-life recycling rate for stainless steel at around 95%, with most of that material going back into new stainless steel rather than being downcycled <Citation id={6} />. If recyclability specifically is what you're optimizing for, steel currently has the advantage — not because the material is more virtuous, but because the scrap-metal supply chain that recovers it is more mature than curbside glass collection in most of the country.
+Stainless steel is a different story, on paper — industry data from the International Stainless Steel Forum puts the end-of-life recycling rate for stainless steel at around 95%, with most of that material going back into new stainless steel rather than being downcycled <Citation id={6} />. That number and the EPA's 31.3% are not measuring the same thing: the EPA figure is a real-world US municipal collection rate, while the 95% is a global, industry-reported end-of-life estimate from a stainless steel trade body, and putting them side by side as if they answer the same question would be misleading. What the steel figure does tell you honestly is that the scrap-metal supply chain for recovering steel is far more mature than curbside glass collection in most of the US — which is a genuine advantage, just not one you can express as "3x better."
 
 <KeyTakeaways>
 - Neither glass nor food-grade stainless steel leaches meaningfully into water, tea, or coffee under normal use.
 - Glass is the more chemically inert of the two and is easiest to verify visually — you can see what's inside it.
-- Stainless steel wins on insulation and durability, and currently has a much higher real-world recycling rate.
+- Stainless steel wins on insulation and durability, and its scrap-recovery supply chain is far more mature than curbside glass collection — though the oft-cited "95% vs. 31%" comparison mixes a global industry estimate with a US municipal rate and isn't apples-to-apples.
 - "BPA-free" plastic is not the same claim as "doesn't leach anything" — most BPA-free products tested still released other hormonally active chemicals.
 - The material upgrade that matters most isn't glass-vs-steel — it's either of them instead of single-use plastic.
 </KeyTakeaways>
