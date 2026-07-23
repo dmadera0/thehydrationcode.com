@@ -1,0 +1,265 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Disclosure from '@components/product/Disclosure.astro';
+import ProsCons from '@components/product/ProsCons.astro';
+import PriceSlot from '@components/product/PriceSlot.astro';
+import AffiliateLink from '@components/product/AffiliateLink.astro';
+import ComparisonTable from '@components/content/ComparisonTable.astro';
+import ArticleCard from '@components/content/ArticleCard.astro';
+import { resolvePrice } from '@lib/pricing';
+import { getPublishedPosts } from '@lib/posts';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  bottle: CollectionEntry<'bottles'>;
+}
+
+export async function getStaticPaths() {
+  const bottles = await getCollection('bottles');
+  return bottles.map((bottle) => ({ params: { slug: bottle.id }, props: { bottle } }));
+}
+
+const { bottle } = Astro.props;
+const {
+  name,
+  brand,
+  tagline,
+  bestFor,
+  rating,
+  features,
+  image,
+  imageAlt,
+  affiliateId,
+  material,
+  capacityOz,
+  dishwasherSafe,
+  lidType,
+  pros,
+  cons,
+} = bottle.data;
+
+const price = resolvePrice(bottle.data);
+const relatedPosts = (await getPublishedPosts())
+  .filter((post) => post.data.pillar === 'why-glass-matters')
+  .slice(0, 3);
+---
+
+<BaseLayout title={`${name} Review`} description={tagline} ogImage={image.src}>
+  <div class="detail">
+    <header class="detail-head">
+      <p class="brand source-label">{brand}</p>
+      <h1>{name}</h1>
+      <p class="tagline">{tagline}</p>
+    </header>
+
+    <div class="detail-top">
+      <Image src={image} alt={imageAlt} width={480} height={480} class="hero-image" />
+
+      <div class="buy-box">
+        <p class="rating">{rating.toFixed(1)} / 5</p>
+        <p class="best-for-pill">{bestFor}</p>
+        <ul class="features">
+          {features.map((feature) => (
+            <li>
+              <span class="check" aria-hidden="true">✓</span>
+              {feature}
+            </li>
+          ))}
+        </ul>
+
+        <Disclosure />
+
+        <PriceSlot bottle={bottle} />
+        <AffiliateLink affiliateId={affiliateId} class="buy-cta">{price.cta} ↗</AffiliateLink>
+      </div>
+    </div>
+
+    <section class="verdict" aria-labelledby="verdict-heading">
+      <h2 id="verdict-heading">Our verdict</h2>
+      <p>
+        The {name.toLowerCase()} does what its category promises — glass in contact with your water,
+        nothing else. {bestFor} is where it earns its keep, and the feature set backs that up
+        directly. It isn't the right pick for everyone, which is exactly what the pros and cons below
+        are for.
+      </p>
+    </section>
+
+    <section class="pros-cons-section" aria-labelledby="pros-cons-heading">
+      <h2 id="pros-cons-heading">Pros and cons</h2>
+      <ProsCons pros={pros} cons={cons} />
+    </section>
+
+    <section class="specs" aria-labelledby="specs-heading">
+      <h2 id="specs-heading">Specs</h2>
+      <ComparisonTable
+        headers={['Spec', 'Value']}
+        rows={[
+          ['Material', material],
+          ['Capacity', `${capacityOz} oz`],
+          ['Dishwasher safe', dishwasherSafe ? 'Yes' : 'No'],
+          ['Lid type', lidType],
+        ]}
+      />
+    </section>
+
+    <section class="fit" aria-labelledby="fit-heading">
+      <h2 id="fit-heading">Who it's for — and who should skip it</h2>
+      <div class="fit-grid">
+        <div>
+          <h3>Good fit if</h3>
+          <p>You care most about {bestFor.toLowerCase()} and can live with the tradeoffs listed above as cons.</p>
+        </div>
+        <div>
+          <h3>Skip it if</h3>
+          <p>The first one or two cons above are dealbreakers for how you'd actually use a bottle day to day.</p>
+        </div>
+      </div>
+    </section>
+
+    {relatedPosts.length > 0 && (
+      <section class="related" aria-labelledby="related-heading">
+        <h2 id="related-heading">Related research</h2>
+        <div class="related-grid">
+          {relatedPosts.map((post) => <ArticleCard post={post} />)}
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .detail {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: 3rem var(--spacing-gutter) 4rem;
+  }
+
+  .detail-head h1 {
+    font-size: var(--text-section);
+    line-height: var(--text-section--line-height);
+    letter-spacing: var(--text-section--letter-spacing);
+    margin-block-start: 0.375rem;
+  }
+
+  .detail-head .tagline {
+    margin-block-start: 0.5rem;
+    font-size: 1.125rem;
+  }
+
+  .detail-top {
+    margin-block-start: 2rem;
+    display: grid;
+    grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+
+  .hero-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: var(--radius-panel);
+  }
+
+  .buy-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .rating {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-ink);
+  }
+
+  .best-for-pill {
+    align-self: flex-start;
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--radius-card);
+    background-color: var(--color-brand-tint);
+    color: var(--color-brand);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .features li {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    color: var(--color-body);
+  }
+
+  .check {
+    color: var(--color-brand);
+    font-weight: 700;
+  }
+
+  :global(.buy-cta) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-card);
+    background-color: var(--color-brand);
+    color: var(--color-surface);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  :global(.buy-cta:hover) {
+    background-color: var(--color-brand-dark);
+  }
+
+  section {
+    margin-block-start: 3rem;
+  }
+
+  section h2 {
+    font-size: var(--text-card);
+    line-height: var(--text-card--line-height);
+    margin-block-end: 1rem;
+  }
+
+  .verdict p {
+    max-width: var(--container-prose);
+  }
+
+  .fit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .fit-grid h3 {
+    font-size: 1.0625rem;
+    margin-block-end: 0.375rem;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 2rem;
+  }
+
+  @media (max-width: 47.9375rem) {
+    .detail-top {
+      grid-template-columns: 1fr;
+    }
+
+    .fit-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,45 @@
+---
+/**
+ * Renders the PriceRender union from src/lib/pricing.ts. Amazon products
+ * resolve to `hidden` and MUST NEVER show a dollar figure — see
+ * CLAUDE.md hard rule #3 and docs/AFFILIATE.md. This is a legal constraint,
+ * not a style choice: do not add a price fallback for the hidden case.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { resolvePrice } from '@lib/pricing';
+
+interface Props {
+  bottle: CollectionEntry<'bottles'>;
+}
+
+const { bottle } = Astro.props;
+const price = resolvePrice(bottle.data);
+const asOf = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<div class="price-slot">
+  {price.kind === 'exact' && <p class="price-text">{price.text}</p>}
+  {price.kind === 'range' && (
+    <>
+      <p class="price-text">{price.text}</p>
+      <p class="price-asof source-label">As of {asOf}</p>
+    </>
+  )}
+</div>
+
+<style>
+  .price-slot {
+    min-height: 1.5rem;
+  }
+
+  .price-text {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .price-asof {
+    margin-block-start: 0.125rem;
+    color: var(--color-body);
+  }
+</style>

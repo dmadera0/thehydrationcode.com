@@ -1,0 +1,26 @@
+name: Tall Minimalist Glass Bottle
+brand: Ora
+priceDisplay: hidden # Amazon product: price cannot be shown until PA-API. See src/lib/pricing.ts
+rating: 4.6
+tagline: A slim, no-frills glass bottle built for everyday carry.
+bestFor: Everyday carry
+editorsChoice: false
+features:
+  - Slim profile fits narrow bag pockets and cup holders
+  - Etched volume markings, no printed branding
+  - Stainless steel lid with silicone gasket
+image: ../../assets/images/bottles/ora-tall.jpg
+imageAlt: Tall slim clear glass bottle with a brushed steel screw-top lid
+affiliateId: ora-tall
+material: Soda-lime glass
+capacityOz: 22
+dishwasherSafe: true
+lidType: Stainless steel screw lid with silicone gasket
+pros:
+  - Slimmest profile in this roundup, fits pockets other bottles don't
+  - No outer sleeve means nothing to trap grime or retain odor
+  - Gasket seals well enough for bag transport without leaking
+cons:
+  - No outer protection — the least drop-tolerant bottle we've tested here
+  - Soda-lime glass handles thermal shock worse than borosilicate
+  - Steel lid can pick up a faint metallic taste if it isn't dried fully between uses

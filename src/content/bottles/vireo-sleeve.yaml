@@ -1,0 +1,26 @@
+name: Protected Glass Bottle with Silicone Sleeve
+brand: Vireo
+priceDisplay: hidden # Amazon product: price cannot be shown until PA-API. See src/lib/pricing.ts
+rating: 4.7
+tagline: Glass durability with a shock-absorbing silicone shell.
+bestFor: Commute & gym
+editorsChoice: false
+features:
+  - Full-body silicone sleeve absorbs drops
+  - Wide base resists tipping in a bag
+  - Leak-proof flip lid
+image: ../../assets/images/bottles/vireo-sleeve.jpg
+imageAlt: Clear glass bottle wrapped in a textured silicone protective sleeve
+affiliateId: vireo-sleeve
+material: Borosilicate glass with silicone sleeve
+capacityOz: 20
+dishwasherSafe: true
+lidType: Flip-top silicone lid
+pros:
+  - Silicone sleeve meaningfully reduces breakage risk versus bare glass
+  - Sleeve doubles as a grip in sweaty gym conditions
+  - Flip lid opens one-handed
+cons:
+  - Sleeve's textured surface traps grime and needs regular scrubbing
+  - Heavier than an equivalent bare glass bottle
+  - Sleeve can hold onto odors from strong-smelling drinks over time

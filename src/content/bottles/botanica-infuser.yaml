@@ -1,0 +1,26 @@
+name: Fruit-Infuser Glass Bottle
+brand: Botanica
+priceDisplay: hidden # Amazon product: price cannot be shown until PA-API. See src/lib/pricing.ts
+rating: 4.5
+tagline: A glass bottle with a removable infuser core for fruit and herbs.
+bestFor: Flavor lovers
+editorsChoice: false
+features:
+  - Removable infuser core for fruit, herbs, or tea
+  - Wide mouth for easy ice and fruit loading
+  - Wood-finish lid with silicone seal
+image: ../../assets/images/bottles/botanica-infuser.jpg
+imageAlt: Glass bottle with a central fruit infuser tube and a wood-toned lid
+affiliateId: botanica-infuser
+material: Borosilicate glass
+capacityOz: 24
+dishwasherSafe: false
+lidType: Wood-finish lid with silicone seal
+pros:
+  - Infuser core stays centered instead of drifting to one side
+  - Wide mouth makes hand-cleaning the infuser tube straightforward
+  - Largest capacity here, so fewer refills through the day
+cons:
+  - Lid is hand-wash only, which is inconvenient if you dishwasher everything else
+  - Infuser core is a second small part that can go missing or crack
+  - Heaviest and largest bottle in this roundup, least pocket-friendly

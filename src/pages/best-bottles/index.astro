@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ProductCard from '@components/product/ProductCard.astro';
+import Disclosure from '@components/product/Disclosure.astro';
+
+const bottles = (await getCollection('bottles')).sort((a, b) => b.data.rating - a.data.rating);
+---
+
+<BaseLayout
+  title="Best Glass Bottles"
+  description="Glass water bottles we've actually evaluated — real pros and cons, no bottle with a clean sheet."
+>
+  <div class="hub">
+    <h1>Best Glass Bottles</h1>
+    <p class="dek">
+      Every bottle here gets a real verdict, including the parts that aren't flattering. If a review
+      has no downsides, it's an advertisement.
+    </p>
+
+    <Disclosure />
+
+    <div class="grid">
+      {bottles.map((bottle) => <ProductCard bottle={bottle} />)}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .hub {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: 3rem var(--spacing-gutter) 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  h1 {
+    font-size: var(--text-section);
+    line-height: var(--text-section--line-height);
+    letter-spacing: var(--text-section--letter-spacing);
+  }
+
+  .dek {
+    font-size: 1.125rem;
+    max-width: var(--container-prose);
+  }
+
+  .grid {
+    margin-block-start: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: 2rem;
+  }
+</style>

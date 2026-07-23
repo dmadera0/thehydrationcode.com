@@ -6,10 +6,11 @@
   "engines": { "node": ">=20.0.0" },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node scripts/check-affiliate-links.mjs && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "sync": "astro sync"
+    "sync": "astro sync",
+    "lint:affiliates": "node scripts/check-affiliate-links.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.0.0",

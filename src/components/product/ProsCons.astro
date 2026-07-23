@@ -1,0 +1,76 @@
+---
+interface Props {
+  pros: string[];
+  cons: string[];
+}
+
+const { pros, cons } = Astro.props;
+---
+
+<div class="pros-cons">
+  <div class="col">
+    <h3 class="col-title">Pros</h3>
+    <ul>
+      {pros.map((item) => (
+        <li>
+          <span class="marker" aria-hidden="true">+</span>
+          {item}
+        </li>
+      ))}
+    </ul>
+  </div>
+  <div class="col">
+    <h3 class="col-title">Cons</h3>
+    <ul>
+      {cons.map((item) => (
+        <li>
+          <span class="marker" aria-hidden="true">–</span>
+          {item}
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<style>
+  .pros-cons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .col-title {
+    font-size: var(--text-card);
+    line-height: var(--text-card--line-height);
+    margin-block-end: 0.75rem;
+  }
+
+  .col ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  /* Pros and cons share identical typography — weight, size, and color are
+     equal on purpose. A con that reads smaller or greyer is a de-emphasized
+     con, and CLAUDE.md's credibility rule depends on that never happening. */
+  .col li {
+    display: flex;
+    gap: 0.625rem;
+    font-size: 0.9375rem;
+    color: var(--color-body);
+  }
+
+  .marker {
+    flex-shrink: 0;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  @media (max-width: 30rem) {
+    .pros-cons {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+</style>

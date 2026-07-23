@@ -1,0 +1,29 @@
+---
+/**
+ * The only component permitted to render an affiliate/merchant link anywhere
+ * in the codebase. Always points at the cloaked /go/{id} redirect (never a
+ * raw merchant URL) and always carries the required rel/target attributes.
+ * See docs/AFFILIATE.md.
+ */
+import { getAffiliate } from '@data/affiliates';
+
+interface Props {
+  affiliateId: string;
+  class?: string;
+}
+
+const { affiliateId, class: className } = Astro.props;
+
+// Throws at build time if affiliateId doesn't resolve — a dead or typo'd
+// id fails the build instead of shipping a broken link.
+getAffiliate(affiliateId);
+---
+
+<a
+  href={`/go/${affiliateId}`}
+  rel="sponsored nofollow noopener"
+  target="_blank"
+  class={className}
+>
+  <slot />
+</a>

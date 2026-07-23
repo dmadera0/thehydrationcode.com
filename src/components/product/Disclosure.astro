@@ -1,0 +1,20 @@
+---
+/**
+ * FTC affiliate disclosure. Must render above the first affiliate link on
+ * any page that has one — see CLAUDE.md hard rule #4 and docs/AFFILIATE.md.
+ */
+import { AFFILIATE_DISCLOSURE_SHORT } from '@data/site';
+---
+
+<p class="disclosure">{AFFILIATE_DISCLOSURE_SHORT}</p>
+
+<style>
+  .disclosure {
+    padding: 0.875rem 1.25rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-brand-tint);
+    font-size: 0.8125rem;
+    color: var(--color-body);
+  }
+</style>
