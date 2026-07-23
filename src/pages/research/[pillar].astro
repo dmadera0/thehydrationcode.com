@@ -1,0 +1,63 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ArticleCard from '@components/content/ArticleCard.astro';
+import { PILLARS, PILLAR_LABELS, PILLAR_DESCRIPTIONS } from '@data/taxonomy';
+import { getPublishedPosts } from '@lib/posts';
+
+export function getStaticPaths() {
+  return PILLARS.map((pillar) => ({ params: { pillar } }));
+}
+
+const { pillar } = Astro.params;
+const label = PILLAR_LABELS[pillar];
+const description = PILLAR_DESCRIPTIONS[pillar];
+
+const posts = (await getPublishedPosts()).filter((post) => post.data.pillar === pillar);
+---
+
+<BaseLayout title={label} description={description}>
+  <div class="index">
+    <h1>{label}</h1>
+    <p class="dek">{description}</p>
+
+    {posts.length > 0 ? (
+      <div class="grid">
+        {posts.map((post) => <ArticleCard post={post} />)}
+      </div>
+    ) : (
+      <p class="empty">No articles published under this pillar yet.</p>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .index {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: 3rem var(--spacing-gutter) 4rem;
+  }
+
+  h1 {
+    font-size: var(--text-section);
+    line-height: var(--text-section--line-height);
+    letter-spacing: var(--text-section--letter-spacing);
+  }
+
+  .dek {
+    margin-block-start: 0.75rem;
+    font-size: 1.125rem;
+    max-width: var(--container-prose);
+  }
+
+  .grid {
+    margin-block-start: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 2rem;
+  }
+
+  .empty {
+    margin-block-start: 2.5rem;
+    color: var(--color-body);
+  }
+</style>

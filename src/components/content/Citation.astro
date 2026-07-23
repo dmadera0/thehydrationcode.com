@@ -1,0 +1,15 @@
+---
+/**
+ * Inline citation superscript. `id` is the 1-based position of the source
+ * in the article's frontmatter `sources` array — SourceList.astro numbers
+ * its <li> anchors the same way, so the two always agree without a
+ * separately-authored slug to keep in sync.
+ */
+interface Props {
+  id: number;
+}
+
+const { id } = Astro.props;
+---
+
+<a href={`#source-${id}`} class="citation-ref" aria-label={`Jump to source ${id} in the sources list`}>[{id}]</a>

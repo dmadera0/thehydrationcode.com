@@ -1,0 +1,68 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import { PILLAR_LABELS } from '@data/taxonomy';
+import { getReadingMinutes } from '@lib/reading-time';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props;
+const { title, dek, pillar, heroImage, heroAlt } = post.data;
+const readingMinutes = getReadingMinutes(post.body ?? '');
+---
+
+<a href={`/research/${post.id}`} class="article-card">
+  <Image src={heroImage} alt={heroAlt} width={480} height={270} class="card-image" />
+  <div class="card-body">
+    <p class="pillar-pill source-label">{PILLAR_LABELS[pillar]}</p>
+    <h3 class="card-title">{title}</h3>
+    <p class="card-dek">{dek}</p>
+    <p class="card-meta">{readingMinutes} min read</p>
+  </div>
+</a>
+
+<style>
+  .article-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+    overflow: hidden;
+    text-decoration: none;
+  }
+
+  .card-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pillar-pill {
+    color: var(--color-brand);
+  }
+
+  .card-title {
+    font-size: var(--text-card);
+    line-height: var(--text-card--line-height);
+    letter-spacing: var(--text-card--letter-spacing);
+    color: var(--color-ink);
+  }
+
+  .card-dek {
+    font-size: 0.9375rem;
+  }
+
+  .card-meta {
+    font-size: 0.8125rem;
+    color: var(--color-body);
+  }
+</style>

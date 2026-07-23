@@ -1,0 +1,85 @@
+---
+interface Source {
+  label: string;
+  title: string;
+  publisher: string;
+  year: number;
+  url: string;
+  doi?: string;
+}
+
+interface Props {
+  sources: Source[];
+}
+
+const { sources } = Astro.props;
+---
+
+<section class="source-list" aria-labelledby="sources-heading">
+  <h2 id="sources-heading">Sources</h2>
+  <ol>
+    {sources.map((source, index) => (
+      <li id={`source-${index + 1}`}>
+        <span class="source-label">{source.label}</span>
+        <span class="entry-title">{source.title}</span>
+        <span class="entry-meta">
+          {source.publisher}, {source.year}
+          {source.doi && <> · DOI: {source.doi}</>}
+        </span>
+        <a href={source.url} target="_blank" rel="noopener noreferrer">Read the source ↗</a>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .source-list {
+    margin-block-start: 3rem;
+    padding-block-start: 2rem;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .source-list h2 {
+    font-size: var(--text-card);
+    line-height: var(--text-card--line-height);
+    margin-block-end: 1.25rem;
+  }
+
+  .source-list ol {
+    list-style: decimal;
+    padding-inline-start: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .source-list li {
+    padding-inline-start: 0.25rem;
+  }
+
+  .source-list .source-label {
+    display: block;
+    color: var(--color-brand);
+  }
+
+  .entry-title {
+    display: block;
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+
+  .entry-meta {
+    display: block;
+    font-size: 0.875rem;
+  }
+
+  .source-list a {
+    font-size: 0.875rem;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .source-list a:hover {
+    text-decoration: underline;
+  }
+</style>

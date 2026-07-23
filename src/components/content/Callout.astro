@@ -1,0 +1,55 @@
+---
+type Variant = 'note' | 'warning' | 'key';
+
+interface Props {
+  variant?: Variant;
+}
+
+const { variant = 'note' } = Astro.props;
+
+const labels: Record<Variant, string> = {
+  note: 'Note',
+  warning: 'Caution',
+  key: 'Key takeaway',
+};
+---
+
+<div class:list={['callout', `callout-${variant}`]}>
+  <p class="callout-label source-label">{labels[variant]}</p>
+  <div class="callout-body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .callout {
+    margin-block: 1.75rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-line);
+    border-inline-start-width: 4px;
+  }
+
+  .callout-note {
+    border-inline-start-color: var(--color-accent);
+  }
+
+  .callout-key {
+    border-inline-start-color: var(--color-brand);
+    background-color: var(--color-brand-tint);
+  }
+
+  .callout-warning {
+    border-inline-start-color: var(--color-ink);
+    border-inline-start-width: 6px;
+  }
+
+  .callout-label {
+    margin-block-end: 0.5rem;
+    color: var(--color-body);
+  }
+
+  .callout-body :global(p:last-child) {
+    margin-block-end: 0;
+  }
+</style>

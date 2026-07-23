@@ -1,0 +1,47 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ArticleCard from '@components/content/ArticleCard.astro';
+import { getPublishedPosts } from '@lib/posts';
+
+const posts = await getPublishedPosts();
+---
+
+<BaseLayout
+  title="The Research"
+  description="Research-backed breakdowns of microplastics, plastic leaching, and the science behind better hydration choices. Every claim cited."
+>
+  <div class="index">
+    <h1>The Research</h1>
+    <p class="dek">Every article traces back to a named source. No exceptions.</p>
+
+    <div class="grid">
+      {posts.map((post) => <ArticleCard post={post} />)}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .index {
+    max-width: var(--container-content);
+    margin-inline: auto;
+    padding: 3rem var(--spacing-gutter) 4rem;
+  }
+
+  h1 {
+    font-size: var(--text-section);
+    line-height: var(--text-section--line-height);
+    letter-spacing: var(--text-section--letter-spacing);
+  }
+
+  .dek {
+    margin-block-start: 0.75rem;
+    font-size: 1.125rem;
+  }
+
+  .grid {
+    margin-block-start: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 2rem;
+  }
+</style>

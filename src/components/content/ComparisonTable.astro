@@ -1,0 +1,82 @@
+---
+interface Props {
+  caption?: string;
+  headers: string[];
+  rows: Array<Array<string | number>>;
+}
+
+const { caption, headers, rows } = Astro.props;
+---
+
+<div class="table-scroll">
+  <table>
+    {caption && <caption>{caption}</caption>}
+    <thead>
+      <tr>
+        {headers.map((header) => <th scope="col">{header}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          {row.map((cell, index) =>
+            index === 0 ? <th scope="row">{cell}</th> : <td>{cell}</td>
+          )}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .table-scroll {
+    margin-block: 2rem;
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+
+  table {
+    width: 100%;
+    min-width: 32rem;
+    border-collapse: collapse;
+  }
+
+  caption {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-ink);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  th,
+  td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.9375rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  thead th {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--color-ink);
+    background-color: var(--color-brand-tint);
+  }
+
+  tbody th {
+    font-weight: 600;
+    color: var(--color-ink);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    color: var(--color-body);
+  }
+
+  tr:last-child th,
+  tr:last-child td {
+    border-bottom: none;
+  }
+</style>

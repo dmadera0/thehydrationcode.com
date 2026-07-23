@@ -1,0 +1,57 @@
+---
+interface Props {
+  value: string;
+  label: string;
+  source: string;
+  url?: string;
+}
+
+const { value, label, source, url } = Astro.props;
+---
+
+<figure class="stat-block">
+  <p class="value">{value}</p>
+  <figcaption>
+    <p class="label">{label}</p>
+    {url ? (
+      <a class="source source-label" href={url} target="_blank" rel="noopener noreferrer">{source}</a>
+    ) : (
+      <p class="source source-label">{source}</p>
+    )}
+  </figcaption>
+</figure>
+
+<style>
+  .stat-block {
+    margin-block: 2rem;
+    padding: 1.75rem;
+    border-radius: var(--radius-panel);
+    background-color: var(--color-brand-tint);
+  }
+
+  .value {
+    font-size: var(--text-stat);
+    line-height: var(--text-stat--line-height);
+    letter-spacing: var(--text-stat--letter-spacing);
+    font-weight: var(--text-stat--font-weight);
+    font-family: var(--font-display);
+    color: var(--color-brand);
+  }
+
+  .label {
+    margin-block-start: 0.25rem;
+    color: var(--color-ink);
+  }
+
+  .source {
+    display: inline-block;
+    margin-block-start: 0.5rem;
+    color: var(--color-body);
+    text-decoration: none;
+  }
+
+  a.source:hover {
+    color: var(--color-brand);
+    text-decoration: underline;
+  }
+</style>
