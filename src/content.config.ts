@@ -1,18 +1,6 @@
 import { defineCollection, reference, z } from 'astro:content';
 import { glob } from 'astro/loaders';
-
-/** Content pillars. Used as taxonomy across posts and navigation. */
-export const PILLARS = [
-  'science-of-plastic',
-  'why-glass-matters',
-  'health-optimization',
-] as const;
-
-export const PILLAR_LABELS: Record<(typeof PILLARS)[number], string> = {
-  'science-of-plastic': 'The Science of Plastic',
-  'why-glass-matters': 'Why Glass Matters',
-  'health-optimization': 'Health & Optimization',
-};
+import { PILLARS } from '@data/taxonomy';
 
 /**
  * A citation. Every factual claim on this site resolves to one of these.

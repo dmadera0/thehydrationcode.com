@@ -1,22 +1,18 @@
 ---
 import { SITE, AFFILIATE_DISCLOSURE_SHORT } from '@data/site';
-import { PILLARS, PILLAR_LABELS } from '@/content.config';
+import { PILLARS, PILLAR_LABELS } from '@data/taxonomy';
 
 const year = new Date().getFullYear();
 
 const learnLinks = [
   ...PILLARS.map((pillar) => ({
     label: PILLAR_LABELS[pillar],
-    href: `/research?pillar=${pillar}`,
+    href: `/research/${pillar}`,
   })),
   { label: 'The Research', href: '/research' },
 ];
 
-const shopLinks = [
-  { label: 'Best Glass Bottles', href: '/best-bottles' },
-  { label: 'Everyday Bottles', href: '/best-bottles' },
-  { label: 'Travel & Sport', href: '/best-bottles' },
-];
+const shopLinks = [{ label: 'Best Glass Bottles', href: '/best-bottles' }];
 
 const companyLinks = [
   { label: 'Our Method', href: '/our-method' },
@@ -32,8 +28,8 @@ const companyLinks = [
         <span class="mark" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
+              class="mark-glyph"
               d="M12 2.5C12 2.5 5.5 10.2 5.5 14.7C5.5 18.5 8.4 21.5 12 21.5C15.6 21.5 18.5 18.5 18.5 14.7C18.5 10.2 12 2.5 12 2.5Z"
-              fill="white"
             />
           </svg>
         </span>
@@ -73,8 +69,10 @@ const companyLinks = [
   </div>
 
   <div class="legal">
-    <p class="disclosure">{AFFILIATE_DISCLOSURE_SHORT}</p>
-    <p class="copyright">© {year} {SITE.name}. All rights reserved.</p>
+    <div class="legal-inner">
+      <p class="disclosure">{AFFILIATE_DISCLOSURE_SHORT}</p>
+      <p class="copyright">© {year} {SITE.name}. All rights reserved.</p>
+    </div>
   </div>
 </footer>
 
@@ -115,6 +113,10 @@ const companyLinks = [
     flex-shrink: 0;
     background-color: var(--color-brand);
     border-radius: var(--radius-card);
+  }
+
+  .mark-glyph {
+    fill: var(--color-surface);
   }
 
   .wordmark {
@@ -163,10 +165,10 @@ const companyLinks = [
     border-top: 1px solid var(--color-line);
   }
 
-  .legal p {
+  .legal-inner {
     max-width: var(--container-content);
     margin-inline: auto;
-    padding: 0 var(--spacing-gutter);
+    padding-inline: var(--spacing-gutter);
   }
 
   .disclosure {

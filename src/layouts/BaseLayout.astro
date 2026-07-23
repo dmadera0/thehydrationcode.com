@@ -1,15 +1,19 @@
 ---
 import '../styles/global.css';
 import { SITE } from '@data/site';
+import Header from '@components/layout/Header.astro';
+import Footer from '@components/layout/Footer.astro';
 
 interface Props {
   title: string;
   description: string;
   ogImage?: string;
   noindex?: boolean;
+  /** Set false for a bare shell with no Header/Footer (e.g. the /go redirect page). */
+  chrome?: boolean;
 }
 
-const { title, description, ogImage, noindex = false } = Astro.props;
+const { title, description, ogImage, noindex = false, chrome = true } = Astro.props;
 
 const pageTitle = title === SITE.name ? title : `${title} — ${SITE.name}`;
 const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
@@ -50,11 +54,11 @@ const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
   </head>
   <body>
     <a href="#content" class="skip-link">Skip to content</a>
-    <slot name="header" />
+    {chrome && <Header />}
     <main id="content">
       <slot />
     </main>
-    <slot name="footer" />
+    {chrome && <Footer />}
   </body>
 </html>
 

@@ -15,8 +15,8 @@ function isCurrent(href: string): boolean {
       <span class="mark" aria-hidden="true">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
+            class="mark-glyph"
             d="M12 2.5C12 2.5 5.5 10.2 5.5 14.7C5.5 18.5 8.4 21.5 12 21.5C15.6 21.5 18.5 18.5 18.5 14.7C18.5 10.2 12 2.5 12 2.5Z"
-            fill="white"
           />
         </svg>
       </span>
@@ -80,7 +80,10 @@ function isCurrent(href: string): boolean {
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     });
-    nav.addEventListener('toggle', () => { if (nav.open) closeBtn.focus(); });
+    nav.addEventListener('toggle', () => {
+      document.body.style.overflow = nav.open ? 'hidden' : '';
+      if (nav.open) closeBtn.focus();
+    });
   })();
 </script>
 
@@ -138,6 +141,10 @@ function isCurrent(href: string): boolean {
     flex-shrink: 0;
     background-color: var(--color-brand);
     border-radius: var(--radius-card);
+  }
+
+  .mark-glyph {
+    fill: var(--color-surface);
   }
 
   .wordmark-text {
@@ -276,7 +283,10 @@ function isCurrent(href: string): boolean {
     gap: 1.5rem;
   }
 
-  .mobile-panel a {
+  /* :where() keeps this at the specificity of a bare `a` selector, so it can
+     never outrank a single class like `.cta` regardless of source order —
+     the fix for the same specificity collision found in Footer's .legal p. */
+  :where(.mobile-panel) a {
     font-family: var(--font-display);
     font-size: 1.5rem;
     font-weight: 600;
@@ -284,13 +294,12 @@ function isCurrent(href: string): boolean {
     text-decoration: none;
   }
 
-  .mobile-panel a[aria-current='page'] {
+  :where(.mobile-panel) a[aria-current='page'] {
     color: var(--color-brand);
   }
 
-  .mobile-panel a.cta-mobile {
+  .cta-mobile {
     justify-content: center;
-    color: var(--color-surface);
   }
 
   @media (max-width: 47.9375rem) {
