@@ -60,6 +60,8 @@ const bottles = defineCollection({
       currency: z.literal('USD').default('USD'),
 
       rating: z.number().min(0).max(5),
+      /** Date this review's verdict was last written/checked. Feeds Review.datePublished in JSON-LD. */
+      reviewedAt: z.coerce.date(),
       tagline: z.string().max(90),
       /** e.g. "Home & desk", "Commute & gym" */
       bestFor: z.string(),

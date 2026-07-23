@@ -2,6 +2,7 @@ name: Fruit-Infuser Glass Bottle
 brand: Botanica
 priceDisplay: hidden # Amazon product: price cannot be shown until PA-API. See src/lib/pricing.ts
 rating: 4.5
+reviewedAt: 2026-07-23
 tagline: A glass bottle with a removable infuser core for fruit and herbs.
 bestFor: Flavor lovers
 editorsChoice: false

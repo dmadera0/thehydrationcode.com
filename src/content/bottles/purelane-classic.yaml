@@ -3,6 +3,7 @@ name: Classic Cork-Top Glass Bottle
 brand: Purelane
 priceDisplay: hidden   # Amazon product: price cannot be shown until PA-API. See src/lib/pricing.ts
 rating: 4.8
+reviewedAt: 2026-07-23
 tagline: The everyday desk and home bottle done right.
 bestFor: Home & desk
 editorsChoice: true

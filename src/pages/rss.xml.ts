@@ -10,6 +10,9 @@ export const GET: APIRoute = async (context) => {
     title: SITE.name,
     description: SITE.description,
     site: context.site ?? SITE.url,
+    // astro.config.mjs sets trailingSlash: 'never' — match it here, or
+    // @astrojs/rss appends a trailing slash to every link by default.
+    trailingSlash: false,
     items: posts.map((post) => ({
       title: post.data.title,
       description: post.data.dek,

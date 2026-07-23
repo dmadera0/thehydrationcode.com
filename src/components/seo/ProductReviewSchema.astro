@@ -18,10 +18,12 @@ import { SITE } from '@data/site';
 interface Props {
   bottle: CollectionEntry<'bottles'>;
   url: string;
+  /** The page's own "Our verdict" text — one copy, shared with Review.reviewBody. */
+  reviewBody: string;
 }
 
-const { bottle, url } = Astro.props;
-const { name, brand, tagline, image, rating } = bottle.data;
+const { bottle, url, reviewBody } = Astro.props;
+const { name, brand, tagline, image, rating, reviewedAt, pros, cons } = bottle.data;
 
 const schema = {
   '@context': 'https://schema.org',
@@ -33,15 +35,35 @@ const schema = {
   url,
   review: {
     '@type': 'Review',
+    reviewBody,
+    datePublished: reviewedAt.toISOString(),
     reviewRating: {
       '@type': 'Rating',
       ratingValue: rating,
       bestRating: 5,
-      worstRating: 0,
+      worstRating: 1,
     },
     author: {
       '@type': 'Organization',
       name: SITE.name,
+    },
+    // Google's pros/cons rich result properties — ProsCons.astro already
+    // holds this exact data, so this just mirrors it into structured data.
+    positiveNotes: {
+      '@type': 'ItemList',
+      itemListElement: pros.map((text, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: text,
+      })),
+    },
+    negativeNotes: {
+      '@type': 'ItemList',
+      itemListElement: cons.map((text, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: text,
+      })),
     },
   },
 };

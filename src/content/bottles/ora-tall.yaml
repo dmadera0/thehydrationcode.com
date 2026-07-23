@@ -2,6 +2,7 @@ name: Tall Minimalist Glass Bottle
 brand: Ora
 priceDisplay: hidden # Amazon product: price cannot be shown until PA-API. See src/lib/pricing.ts
 rating: 4.6
+reviewedAt: 2026-07-23
 tagline: A slim, no-frills glass bottle built for everyday carry.
 bestFor: Everyday carry
 editorsChoice: false

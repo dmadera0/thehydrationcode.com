@@ -2,6 +2,7 @@ name: Protected Glass Bottle with Silicone Sleeve
 brand: Vireo
 priceDisplay: hidden # Amazon product: price cannot be shown until PA-API. See src/lib/pricing.ts
 rating: 4.7
+reviewedAt: 2026-07-23
 tagline: Glass durability with a shock-absorbing silicone shell.
 bestFor: Commute & gym
 editorsChoice: false

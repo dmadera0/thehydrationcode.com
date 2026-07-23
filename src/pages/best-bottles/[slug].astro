@@ -55,10 +55,14 @@ const breadcrumbItems = [
   { name: 'Best Bottles', url: `${SITE.url}/best-bottles` },
   { name, url: canonicalUrl },
 ];
+
+// Shared between the visible "Our verdict" section and Review.reviewBody in
+// the Product schema below — one verdict, not two copies to keep in sync.
+const verdict = `The ${name.toLowerCase()} does what its category promises — glass in contact with your water, nothing else. ${bestFor} is where it earns its keep, and the feature set backs that up directly. It isn't the right pick for everyone, which is exactly what the pros and cons below are for.`;
 ---
 
 <BaseLayout title={`${name} Review`} description={tagline} ogImage={ogImage}>
-  <ProductReviewSchema bottle={bottle} url={canonicalUrl} />
+  <ProductReviewSchema bottle={bottle} url={canonicalUrl} reviewBody={verdict} />
   <BreadcrumbSchema items={breadcrumbItems} />
 
   <div class="detail">
@@ -92,12 +96,7 @@ const breadcrumbItems = [
 
     <section class="verdict" aria-labelledby="verdict-heading">
       <h2 id="verdict-heading">Our verdict</h2>
-      <p>
-        The {name.toLowerCase()} does what its category promises — glass in contact with your water,
-        nothing else. {bestFor} is where it earns its keep, and the feature set backs that up
-        directly. It isn't the right pick for everyone, which is exactly what the pros and cons below
-        are for.
-      </p>
+      <p>{verdict}</p>
     </section>
 
     <section class="pros-cons-section" aria-labelledby="pros-cons-heading">

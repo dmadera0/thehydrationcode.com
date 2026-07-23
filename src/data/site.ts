@@ -8,6 +8,9 @@ export const SITE = {
     'Research-backed breakdowns of microplastics, plastic leaching, and the glass bottles worth trusting. Every claim cited.',
   promise:
     'The facts and tools to make better hydration choices—so you can trust what you\u2019re drinking and share that confidence with others.',
+  /** Raster logo for JSON-LD (Organization.logo, Article.publisher.logo).
+   * Google requires a raster format here — SVG errors in Search Console. */
+  logoPath: '/logo-600x60.png',
 } as const;
 
 /**

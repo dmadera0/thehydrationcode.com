@@ -8,10 +8,7 @@ const schema = {
   '@type': 'Organization',
   name: SITE.name,
   url: SITE.url,
-  // TODO: swap for a real raster logo (PNG/WebP, min 112x112) before launch —
-  // an SVG mark is fine for the favicon but isn't reliably read by every
-  // consumer of Organization.logo.
-  logo: `${SITE.url}/favicon.svg`,
+  logo: `${SITE.url}${SITE.logoPath}`,
   description: SITE.description,
 };
 ---
