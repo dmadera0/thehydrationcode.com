@@ -1,0 +1,79 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import BreadcrumbSchema from '@components/seo/BreadcrumbSchema.astro';
+import { SITE } from '@data/site';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
+const breadcrumbItems = [
+  { name: 'Home', url: SITE.url },
+  { name: title, url: canonicalUrl },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <BreadcrumbSchema items={breadcrumbItems} />
+  <article class="legal">
+    <h1>{title}</h1>
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal {
+    max-width: var(--container-prose);
+    margin-inline: auto;
+    padding: 3rem var(--spacing-gutter) 4rem;
+  }
+
+  .legal h1 {
+    font-size: var(--text-section);
+    line-height: var(--text-section--line-height);
+    letter-spacing: var(--text-section--letter-spacing);
+    margin-block-end: 2rem;
+  }
+
+  .prose :global(h2) {
+    font-size: var(--text-card);
+    line-height: var(--text-card--line-height);
+    margin-block: 2rem 1rem;
+  }
+
+  .prose :global(h3) {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin-block: 1.5rem 0.5rem;
+  }
+
+  .prose :global(p) {
+    margin-block-end: 1.25rem;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin-block-end: 1.25rem;
+    padding-inline-start: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .prose :global(li) {
+    list-style: revert;
+  }
+
+  .prose :global(a) {
+    color: var(--color-accent);
+  }
+
+  .prose :global(strong) {
+    color: var(--color-ink);
+  }
+</style>

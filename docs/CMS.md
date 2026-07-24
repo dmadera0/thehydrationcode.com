@@ -121,9 +121,10 @@ phone, or by someone without the repo cloned locally) instead of only
 against a local working tree. It needs a GitHub App and, critically, a
 server to run on — Keystatic's GitHub mode injects an OAuth-callback and
 API-proxy route that must handle requests at runtime, not at build time.
-That's the whole reason this project now has `@astrojs/node` as an adapter
-even though the public site is still 100% static output (see the comment at
-the top of `astro.config.mjs`).
+That's the whole reason `@astrojs/node` exists in this project at all — it's
+only ever loaded when `KEYSTATIC_ENABLED=true` (see "Turning it on" above
+and the comment at the top of `astro.config.mjs`); the public site itself is
+100% static output either way.
 
 **This is wired but intentionally not turned on.** `KEYSTATIC_STORAGE` is
 unset in `.env.example`, so `keystatic.config.ts` falls back to `local`

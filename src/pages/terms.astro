@@ -1,0 +1,60 @@
+---
+import LegalLayout from '@layouts/LegalLayout.astro';
+import { SITE } from '@data/site';
+
+const year = new Date().getFullYear();
+---
+
+<LegalLayout title="Terms of Use" description="The terms governing use of The Hydration Code.">
+  <p>Last updated {year}. By using this site, you agree to the following.</p>
+
+  <h2>The content here is informational, not professional advice</h2>
+  <p>
+    Nothing on {SITE.name} is medical, health, or professional advice. Articles summarize published
+    research on hydration, plastics, and related topics; they are not a substitute for consulting a
+    doctor, dietitian, or other qualified professional about your own health. Product reviews reflect
+    our own editorial evaluation (see <a href="/our-method">Our Method</a>) and are not a guarantee of
+    fitness for any particular purpose.
+  </p>
+
+  <h2>Affiliate links</h2>
+  <p>
+    This site contains affiliate links and earns a commission on qualifying purchases, disclosed in
+    full on the <a href="/affiliate-disclosure">affiliate disclosure</a> page. Using an affiliate link
+    does not change the price you pay.
+  </p>
+
+  <h2>No warranty</h2>
+  <p>
+    This site is provided "as is." We make a genuine effort to keep every factual claim accurate and
+    sourced, but we don't warrant that the site is error-free, uninterrupted, or that any product
+    recommendation is suitable for your specific circumstances. Research gets superseded; we correct
+    what we can when we learn about it, but we can't guarantee every page reflects the most current
+    study at every moment you read it.
+  </p>
+
+  <h2>Limitation of liability</h2>
+  <p>
+    To the fullest extent permitted by law, {SITE.name} and whoever operates it are not liable for any
+    damages arising from your use of this site or reliance on its content, including decisions made
+    based on product reviews or research summaries.
+  </p>
+
+  <h2>Intellectual property</h2>
+  <p>
+    Original text and analysis on this site is ours. Cited studies, images, and data belong to their
+    original publishers and are referenced under fair use for commentary and citation purposes. Product
+    images belong to their respective manufacturers or retailers.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    We may update these terms as the site changes. Continued use after an update means you accept the
+    revised terms.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    <a href="mailto:hello@thehydrationcode.com">hello@thehydrationcode.com</a>.
+  </p>
+</LegalLayout>

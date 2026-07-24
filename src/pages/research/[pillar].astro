@@ -30,9 +30,12 @@ const breadcrumbItems = [
     <p class="dek">{description}</p>
 
     {posts.length > 0 ? (
-      <div class="grid">
-        {posts.map((post) => <ArticleCard post={post} />)}
-      </div>
+      <>
+        <h2 class="visually-hidden">Articles in {label}</h2>
+        <div class="grid">
+          {posts.map((post) => <ArticleCard post={post} />)}
+        </div>
+      </>
     ) : (
       <p class="empty">No articles published under this pillar yet.</p>
     )}
@@ -68,5 +71,13 @@ const breadcrumbItems = [
   .empty {
     margin-block-start: 2.5rem;
     color: var(--color-body);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
   }
 </style>

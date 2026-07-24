@@ -30,9 +30,13 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
 });
 const relatedBottleEntries = relatedBottles?.length ? await getEntries(relatedBottles) : [];
 
-const relatedPosts = (await getPublishedPosts())
-  .filter((p) => p.data.pillar === pillar && p.id !== post.id)
-  .slice(0, 3);
+// Same-pillar articles first; if that pillar doesn't have 3 others yet,
+// backfill with the newest other posts rather than showing an empty or
+// half-empty section.
+const otherPosts = (await getPublishedPosts()).filter((p) => p.id !== post.id);
+const samePillar = otherPosts.filter((p) => p.data.pillar === pillar);
+const otherPillars = otherPosts.filter((p) => p.data.pillar !== pillar);
+const relatedPosts = [...samePillar, ...otherPillars].slice(0, 3);
 
 const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
 const ogImage = `/og/posts/${post.id}.png`;
@@ -100,7 +104,9 @@ const breadcrumbItems = [
 
     {relatedPosts.length > 0 && (
       <section class="related-posts" aria-labelledby="related-posts-heading">
-        <h2 id="related-posts-heading">More on {PILLAR_LABELS[pillar]}</h2>
+        <h2 id="related-posts-heading">
+          {samePillar.length > 0 ? `More on ${PILLAR_LABELS[pillar]}` : 'More research'}
+        </h2>
         <div class="related-posts-grid">
           {relatedPosts.map((relatedPost) => <ArticleCard post={relatedPost} />)}
         </div>

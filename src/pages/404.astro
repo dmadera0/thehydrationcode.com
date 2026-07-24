@@ -1,0 +1,92 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page Not Found" description="This page doesn't exist." noindex>
+  <div class="not-found">
+    <p class="eyebrow source-label">404</p>
+    <h1>That page doesn't exist.</h1>
+    <p class="sub">
+      The link might be old, mistyped, or the page was moved. Here's where the useful stuff actually
+      lives:
+    </p>
+    <div class="links">
+      <a href="/research" class="btn-primary">Read the Research</a>
+      <a href="/best-bottles" class="btn-outline">See Best Glass Bottles</a>
+    </div>
+    <p class="home"><a href="/">Or start from the homepage →</a></p>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found {
+    max-width: var(--container-prose);
+    margin-inline: auto;
+    padding: 5rem var(--spacing-gutter) 6rem;
+    text-align: center;
+  }
+
+  .eyebrow {
+    color: var(--color-brand);
+  }
+
+  h1 {
+    margin-block-start: 0.75rem;
+    font-size: var(--text-section);
+    line-height: var(--text-section--line-height);
+    letter-spacing: var(--text-section--letter-spacing);
+  }
+
+  .sub {
+    margin-block-start: 1rem;
+    font-size: 1.125rem;
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+
+  .links {
+    margin-block-start: 2rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .btn-primary,
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-card);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background-color: var(--color-brand);
+    color: var(--color-surface);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-brand-dark);
+  }
+
+  .btn-outline {
+    border: 1px solid var(--color-brand);
+    color: var(--color-brand);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--color-brand-tint);
+  }
+
+  .home {
+    margin-block-start: 2rem;
+    font-size: 0.9375rem;
+  }
+
+  .home a {
+    color: var(--color-body);
+  }
+</style>

@@ -1,0 +1,91 @@
+---
+import LegalLayout from '@layouts/LegalLayout.astro';
+---
+
+<LegalLayout
+  title="Our Method"
+  description="How The Hydration Code evaluates bottles, what the ratings mean, how sourcing works, and who runs this site."
+>
+  <p>
+    Before you trust anything else on this site, you should know exactly how it's put together. This
+    page is that explanation, written plainly rather than buried in a footer.
+  </p>
+
+  <h2>Who runs this</h2>
+  <p>
+    The Hydration Code is operated anonymously. There's no founder bio, no author photos, no
+    on-camera personality — deliberately. The reasoning is simple: a face doesn't make a citation more
+    accurate, and we'd rather you evaluate the claims than a persona. When we're wrong, correct us in
+    the same spirit — point at the source, not the byline, because there isn't one.
+  </p>
+  <p>
+    The site is reader-supported. We earn a commission when you buy a bottle through a link here — see
+    the <a href="/affiliate-disclosure">affiliate disclosure</a> for specifics. That's the entire
+    business model. There's no sponsored content, no pay-for-placement, and no bottle appears here
+    because a brand asked to be included.
+  </p>
+
+  <h2>How sourcing works</h2>
+  <p>
+    Every factual claim on this site carries a source name and year, and every article ends in a
+    numbered list of exactly what was cited. That's not a style choice — it's the whole basis of why
+    you should believe anything we say.
+  </p>
+  <p>
+    The rule we hold ourselves to, verbatim from our internal build standard: <strong>a citation must
+    link to the source it names, and that source must be readable without payment.</strong> If we're
+    attributing a number to a journal, a government agency, or a research body, the link goes to that
+    body's own page — not a news article reporting on it, not a blog post summarizing it. If the
+    primary source is paywalled, we link an open mirror (like a PubMed Central record) or we cite a
+    different, verifiable source instead. A claim that's probably true but that we can't personally
+    verify against an actual readable source gets marked <code>NEEDS SOURCE</code> in our drafts rather
+    than shipped as fact. We would rather publish an article with a visible gap than one with an
+    invented study.
+  </p>
+  <p>
+    This has real consequences you can see in the published research: we've corrected our own
+    homepage statistics more than once when a closer look showed the citation didn't actually support
+    the number attached to it, and we've flagged studies with known methodological criticism rather
+    than quietly presenting a single number as settled. Being the source that mentions the rebuttal is
+    worth more to us than a cleaner-looking headline stat.
+  </p>
+
+  <h2>How we evaluate bottles</h2>
+  <p>We look at the same handful of things for every bottle, in roughly this order:</p>
+  <ul>
+    <li>
+      <strong>Material safety.</strong> What's actually in contact with the water — glass composition,
+      lid material, any coatings — and whether that's backed by the same sourcing standard as our
+      research articles, not marketing copy from the manufacturer.
+    </li>
+    <li>
+      <strong>Real-world durability and use.</strong> Lid seals, cleaning difficulty, how it survives
+      a drop, whether the capacity matches how it's actually marketed (a "commute" bottle that doesn't
+      fit a cup holder is a real flaw).
+    </li>
+    <li>
+      <strong>Honest tradeoffs.</strong> Every bottle we list has at least two real, specific downsides
+      in its review. A recommendation with no listed downside is an advertisement, and we don't publish
+      those.
+    </li>
+  </ul>
+
+  <h2>What the rating actually means</h2>
+  <p>
+    The number next to each bottle (out of 5) is <strong>our own editorial score</strong>, assigned by
+    whoever wrote that review based on the criteria above. It is not an aggregate of customer reviews,
+    star ratings pulled from a retailer, or a survey of readers. We're explicit about this in the
+    structured data behind the page, too: bottle pages on this site publish a <code>Review</code>,
+    attributed to this site as the reviewing organization — not an <code>AggregateRating</code>, which
+    would misrepresent a single editorial judgment as a statistical aggregation of many people's
+    opinions. It isn't one, so we don't label it as one.
+  </p>
+
+  <h2>What we get wrong</h2>
+  <p>
+    We will get things wrong. When a figure turns out to be misattributed, outdated, or contradicted by
+    later research, the honest move is a correction, not a quiet edit. If you find a citation that
+    doesn't hold up, that's the most useful thing you can tell us — more useful than agreeing with the
+    conclusion.
+  </p>
+</LegalLayout>

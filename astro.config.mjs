@@ -65,6 +65,11 @@ export default defineConfig({
   },
 
   build: {
-    inlineStylesheets: 'auto',
+    // 'auto' was leaving two small per-page CSS chunks (under 5KB combined)
+    // as render-blocking external requests on content-heavy pages, costing
+    // ~450ms of Lighthouse's render-blocking-insight budget for no benefit
+    // (these files are never shared across pages, so there was nothing to
+    // cache). 'always' inlines all page CSS into the HTML directly.
+    inlineStylesheets: 'always',
   },
 });

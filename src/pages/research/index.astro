@@ -21,6 +21,7 @@ const breadcrumbItems = [
     <h1>The Research</h1>
     <p class="dek">Every article traces back to a named source. No exceptions.</p>
 
+    <h2 class="visually-hidden">All articles</h2>
     <div class="grid">
       {posts.map((post) => <ArticleCard post={post} />)}
     </div>
@@ -50,5 +51,13 @@ const breadcrumbItems = [
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
     gap: 2rem;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
   }
 </style>
