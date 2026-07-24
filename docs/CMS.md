@@ -6,6 +6,18 @@ and `src/data/site-settings.json` — there's no separate database. Saving in
 the UI writes real files to your working tree, exactly like editing them in
 a text editor would.
 
+## Turning it on
+
+Keystatic is build-time optional, gated on `KEYSTATIC_ENABLED` (see
+`.env.example`). Unset or anything other than the literal string `'true'`:
+`astro.config.mjs` never even loads `@astrojs/node`, `@astrojs/react`, or
+`@keystatic/astro` — production builds are pure static output to `dist/`,
+no adapter, no server, no `/keystatic` route, indistinguishable from before
+this CMS existed. Set `KEYSTATIC_ENABLED=true` in your local `.env` to use
+the admin with `pnpm dev`. Nothing about deploying the admin is decided by
+this flag alone — see "GitHub mode setup" below for what turning it on in
+production would actually require.
+
 **Hard rule 7 (CLAUDE.md) applies here exactly as it does to hand-edited
 files: a citation must link the actual source it names, and that source must
 be readable without payment.** The CMS does not relax this. It cannot check
@@ -138,13 +150,30 @@ To actually enable it later:
      sign the session cookie
 5. Update `keystatic.config.ts`'s `github.repo.owner` / `.name` (currently
    `'REPLACE_ME'` placeholders) to the actual GitHub org/user and repo name.
-6. **Update the Amplify deployment itself.** Right now `amplify.yml` still
-   points `baseDirectory` at `dist` — but with the adapter installed,
-   `pnpm build` now emits static output to `dist/client/` and the SSR server
-   entry to `dist/server/`. Serving `dist/` as-is today would be wrong
-   (Amplify would publish the `client/` and `server/` folders as literal
-   paths instead of the site root). This needs a real decision — likely
-   `baseDirectory: dist/client` plus a compute/SSR configuration for the
-   `/keystatic` and `/api/keystatic` routes specifically — before the next
-   production deploy, independent of whether GitHub mode ever gets turned
-   on. Flagging it here so it isn't discovered by a broken deploy.
+6. **Set `KEYSTATIC_ENABLED=true` in Amplify's environment variables.** Only
+   then does `astro.config.mjs` load the adapter at all, which is also only
+   then that the build output shape changes from `dist/` to `dist/client/` +
+   `dist/server/`. At that point `amplify.yml`'s `baseDirectory: dist` does
+   need to become `baseDirectory: dist/client`, plus a compute/SSR
+   configuration for the `/keystatic` and `/api/keystatic` routes
+   specifically. Until `KEYSTATIC_ENABLED` is actually set to `true`
+   somewhere it matters (i.e. in Amplify, not just locally), none of this
+   applies — `amplify.yml` stays correct as-is.
+
+## Dependency pins — do not casually bump these
+
+`vite@6.4.3`, `@astrojs/node@9.5.5`, `@astrojs/react@4.3.0`, `react-aria`,
+`react-stately`, and `@keystar/ui` are all pinned deliberately, together,
+against Astro 5.18.2. The latest versions of the Astro integrations
+(`@astrojs/node@11`, `@astrojs/react@6`) require Astro 6/7 and pull in a
+newer Vite line than Astro 5 ships, which silently breaks `astro check` via
+a duplicate-Vite-version type conflict — not an error that points at the
+real cause. `react-aria` and `react-stately` are marked as optional peers of
+`@keystatic/core` but its bundled admin UI imports from them
+unconditionally regardless; the build fails without them actually
+installed, at an exact pinned version @keystatic/core expects.
+
+**Upgrading Astro means revisiting all six of these together, deliberately,
+not just running `pnpm update`.** Whoever hits a version-conflict build
+failure here in six months will have no reason to suspect Keystatic is the
+cause unless this paragraph exists.

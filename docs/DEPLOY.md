@@ -24,17 +24,14 @@ Static output, git-triggered builds. Roughly $1–5/month at launch traffic.
   (Keystatic GitHub mode) requires the Astro Amplify adapter and a separate
   decision
 - Cache invalidation is automatic on deploy
-- **As of Phase 6, `astro.config.mjs` has an adapter (`@astrojs/node`) so the
-  `/keystatic` admin route can run on-demand — the public site itself is
-  still 100% static output.** This changed the build's output shape:
-  `pnpm build` now writes static files to `dist/client/` and an SSR server
-  entry to `dist/server/`, not directly to `dist/`. `amplify.yml` still says
-  `baseDirectory: dist`, which is now wrong — this hasn't been updated
-  because the admin isn't being deployed yet (see `docs/CMS.md`). Before the
-  *next* production deploy, this needs a real decision: at minimum
-  `baseDirectory: dist/client`, and if Keystatic's GitHub mode is going
-  live too, a compute/SSR configuration for `/keystatic` and
-  `/api/keystatic` specifically.
+- Keystatic (Phase 6) is build-time optional via `KEYSTATIC_ENABLED` (see
+  `docs/CMS.md`) and defaults to off. With it off — the production
+  default — `astro.config.mjs` never loads an adapter, `pnpm build` writes
+  pure static output straight to `dist/`, and `baseDirectory: dist` below
+  stays correct with no changes needed. It only stops being correct if
+  `KEYSTATIC_ENABLED=true` is ever set in the Amplify environment itself,
+  at which point deploying the admin becomes its own decision — see
+  `docs/CMS.md` for what that would actually require.
 
 ## Alternative: S3 + CloudFront + OAC
 
