@@ -5,15 +5,18 @@
  * Everything else references an entry by id and renders it through
  * <AffiliateLink>, which handles rel attributes, cloaking, and tracking.
  *
- * Why: when a tag changes, a program drops us, or a product goes out of
- * stock, this is a one-file edit instead of a grep across every MDX post.
+ * Data lives in src/data/affiliates/*.json — one file per id — so Keystatic
+ * can manage it as a real collection (see keystatic.config.ts). This file
+ * just aggregates those entries at build time via import.meta.glob (eager,
+ * so it's synchronous — every existing caller here stays synchronous too,
+ * no async refactor needed anywhere that imports from this module).
+ *
+ * Why a registry at all: when a tag changes, a program drops us, or a
+ * product goes out of stock, this is a one-file edit instead of a grep
+ * across every MDX post.
  */
 
-export type AffiliateNetwork =
-  | 'amazon'
-  | 'shareasale'
-  | 'impact'
-  | 'direct';
+export type AffiliateNetwork = 'amazon' | 'shareasale' | 'impact' | 'direct';
 
 export interface AffiliateEntry {
   network: AffiliateNetwork;
@@ -27,48 +30,31 @@ export interface AffiliateEntry {
   active?: boolean;
 }
 
-export const affiliates = {
-  'purelane-classic': {
-    network: 'amazon',
-    url: 'https://www.amazon.com/dp/PLACEHOLDER01',
-    label: 'Purelane Classic Cork-Top Glass Bottle',
-    merchant: 'Amazon',
-  },
-  'vireo-sleeve': {
-    network: 'amazon',
-    url: 'https://www.amazon.com/dp/PLACEHOLDER02',
-    label: 'Vireo Protected Glass Bottle with Silicone Sleeve',
-    merchant: 'Amazon',
-  },
-  'ora-tall': {
-    network: 'amazon',
-    url: 'https://www.amazon.com/dp/PLACEHOLDER03',
-    label: 'Ora Tall Minimalist Glass Bottle',
-    merchant: 'Amazon',
-  },
-  'botanica-infuser': {
-    network: 'amazon',
-    url: 'https://www.amazon.com/dp/PLACEHOLDER04',
-    label: 'Botanica Fruit-Infuser Glass Bottle',
-    merchant: 'Amazon',
-  },
-} as const satisfies Record<string, AffiliateEntry>;
+const modules = import.meta.glob<{ default: AffiliateEntry }>('./affiliates/*.json', {
+  eager: true,
+});
 
-export type AffiliateId = keyof typeof affiliates;
+function idFromPath(path: string): string {
+  return path.replace(/^.*\//, '').replace(/\.json$/, '');
+}
+
+export const affiliates: Record<string, AffiliateEntry> = Object.fromEntries(
+  Object.entries(modules).map(([path, mod]) => [idFromPath(path), mod.default]),
+);
+
+export type AffiliateId = string;
 
 /** Runtime-safe lookup. Throws at build time on a bad id rather than shipping a dead link. */
 export function getAffiliate(id: string): AffiliateEntry {
-  const entry = (affiliates as Record<string, AffiliateEntry>)[id];
+  const entry = affiliates[id];
   if (!entry) {
-    throw new Error(
-      `Unknown affiliate id "${id}". Add it to src/data/affiliates.ts.`,
-    );
+    throw new Error(`Unknown affiliate id "${id}". Add src/data/affiliates/${id}.json.`);
   }
   return entry;
 }
 
 export function listAffiliateIds(): AffiliateId[] {
-  return Object.keys(affiliates) as AffiliateId[];
+  return Object.keys(affiliates);
 }
 
 /**

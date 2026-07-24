@@ -6,7 +6,7 @@ import ArticleCard from '@components/content/ArticleCard.astro';
 import ProductCard from '@components/product/ProductCard.astro';
 import Disclosure from '@components/product/Disclosure.astro';
 import NewsletterForm from '@components/layout/NewsletterForm.astro';
-import { SITE, HERO_STATS } from '@data/site';
+import { SITE, HERO_STATS, HERO_COPY } from '@data/site';
 import { PILLARS, PILLAR_LABELS, PILLAR_DESCRIPTIONS, type Pillar } from '@data/taxonomy';
 import { getPublishedPosts } from '@lib/posts';
 import heroImage from '../assets/images/hero/homepage-hero.jpg';
@@ -32,14 +32,14 @@ const pillarIcons: Record<Pillar, string> = {
   <section class="hero">
     <div class="hero-inner">
       <div class="hero-copy">
-        <p class="eyebrow">Research-backed hydration</p>
-        <h1>Know exactly what you're drinking.</h1>
-        <p class="hero-sub">{SITE.description}</p>
+        <p class="eyebrow">{HERO_COPY.eyebrow}</p>
+        <h1>{HERO_COPY.title}</h1>
+        <p class="hero-sub">{HERO_COPY.subtext}</p>
         <div class="hero-ctas">
-          <a href="/research" class="btn-primary">Read the Research</a>
-          <a href="/best-bottles" class="btn-outline">See Best Glass Bottles</a>
+          <a href="/research" class="btn-primary">{HERO_COPY.primaryCtaLabel}</a>
+          <a href="/best-bottles" class="btn-outline">{HERO_COPY.secondaryCtaLabel}</a>
         </div>
-        <p class="trust-line">Every claim cited. No personal brand — just the data.</p>
+        <p class="trust-line">{HERO_COPY.trustLine}</p>
       </div>
       <div class="hero-media">
         <Image

@@ -2,8 +2,10 @@
 /**
  * Two rules, both enforced at build time:
  *
- * 1. A known merchant/affiliate-network domain may only appear in
- *    src/data/affiliates.ts. See CLAUDE.md hard rule #2 and docs/AFFILIATE.md.
+ * 1. A known merchant/affiliate-network domain may only appear in the
+ *    affiliate registry (src/data/affiliates.ts and the per-id entries
+ *    under src/data/affiliates/*.json that Keystatic manages). See
+ *    CLAUDE.md hard rule #2 and docs/AFFILIATE.md.
  * 2. Inside src/content/, no external http(s) link may appear except a
  *    frontmatter `sources` entry (real citations, which must stay direct)
  *    and the /go/{id} cloaked path. This is what catches a direct-brand
@@ -17,6 +19,11 @@ const ROOT = join(import.meta.dirname, '..');
 const SRC = join(ROOT, 'src');
 const CONTENT_DIR = join(SRC, 'content');
 const ALLOWED_FILE = join(SRC, 'data', 'affiliates.ts');
+const ALLOWED_DIR = join(SRC, 'data', 'affiliates') + '/';
+
+function isAllowedFile(file) {
+  return file === ALLOWED_FILE || file.startsWith(ALLOWED_DIR);
+}
 
 const KNOWN_MERCHANT_DOMAINS = [
   'amazon.com',
@@ -63,8 +70,11 @@ function stripSourcesBlocks(text) {
   return text.replace(/^sources:\n(?:[ \t]+.*\n?|\n)*/gm, '');
 }
 
-const registrySource = readFileSync(ALLOWED_FILE, 'utf8');
-const forbiddenDomains = new Set([...KNOWN_MERCHANT_DOMAINS, ...extractRegisteredDomains(registrySource)]);
+const registrySources = [ALLOWED_FILE, ...walk(ALLOWED_DIR)]
+  .filter((f, i, arr) => arr.indexOf(f) === i)
+  .map((f) => readFileSync(f, 'utf8'))
+  .join('\n');
+const forbiddenDomains = new Set([...KNOWN_MERCHANT_DOMAINS, ...extractRegisteredDomains(registrySources)]);
 const domainPattern = new RegExp(
   `\\b(${[...forbiddenDomains].map((d) => d.replace(/\./g, '\\.')).join('|')})\\b`,
   'gi',
@@ -73,7 +83,7 @@ const domainPattern = new RegExp(
 const violations = [];
 
 for (const file of walk(SRC)) {
-  if (file === ALLOWED_FILE) continue;
+  if (isAllowedFile(file)) continue;
   const contents = readFileSync(file, 'utf8');
   const relPath = relative(ROOT, file);
 
@@ -95,7 +105,8 @@ for (const file of walk(SRC)) {
 
 if (violations.length > 0) {
   console.error('\n✖ Affiliate link guard failed.\n');
-  console.error('  Rule 1: raw merchant URLs may only appear in src/data/affiliates.ts.');
+  console.error('  Rule 1: raw merchant URLs may only appear in the affiliate registry');
+  console.error('          (src/data/affiliates.ts / src/data/affiliates/*.json).');
   console.error('  Rule 2: src/content/ may not contain a direct external link outside');
   console.error('          frontmatter `sources` — route it through <AffiliateLink> or /go/.\n');
   console.error('  Violations:\n');

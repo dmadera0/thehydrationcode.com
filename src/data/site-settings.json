@@ -1,0 +1,44 @@
+{
+  "hero": {
+    "eyebrow": "Research-backed hydration",
+    "title": "Know exactly what you're drinking.",
+    "subtext": "Research-backed breakdowns of microplastics, plastic leaching, and the glass bottles worth trusting. Every claim cited.",
+    "primaryCtaLabel": "Read the Research",
+    "secondaryCtaLabel": "See Best Glass Bottles",
+    "trustLine": "Every claim cited. No personal brand — just the data."
+  },
+  "footer": {
+    "promise": "The facts and tools to make better hydration choices—so you can trust what you’re drinking and share that confidence with others.",
+    "disclosure": "We earn a commission when you buy through our links, at no extra cost to you. We only recommend products we believe are genuinely better, based on our research."
+  },
+  "heroStats": [
+    {
+      "value": "240,000",
+      "label": "plastic particles per liter of bottled water",
+      "source": "PNAS, 2024",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10801917/",
+      "verified": true
+    },
+    {
+      "value": "93%",
+      "label": "of bottled water samples tested showed microplastic contamination",
+      "source": "Frontiers in Chemistry, 2018",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6141690/",
+      "verified": true
+    },
+    {
+      "value": "2%",
+      "label": "body-water loss that measurably impairs endurance performance",
+      "source": "James et al., Sports Medicine, 2019",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6901416/",
+      "verified": true
+    },
+    {
+      "value": "9%",
+      "label": "of plastic waste is recycled globally",
+      "source": "OECD, 2022",
+      "url": "https://www.oecd.org/content/dam/oecd/en/publications/support-materials/2022/02/global-plastics-outlook_a653d1c9/Global%20Plastics%20Outlook%20I.pdf",
+      "verified": true
+    }
+  ]
+}
