@@ -5,6 +5,17 @@ import ProductCard from '@components/product/ProductCard.astro';
 import Disclosure from '@components/product/Disclosure.astro';
 import BreadcrumbSchema from '@components/seo/BreadcrumbSchema.astro';
 import { SITE } from '@data/site';
+import { PRODUCTS_ENABLED } from '@lib/flags';
+
+// Rest-parameter route (rather than a plain index.astro) so this page can be
+// dropped from the build entirely when PRODUCTS_ENABLED is false — Astro has
+// no other way to conditionally exclude a static page. An empty array here
+// means zero routes are generated for this file. Named-parameter routes
+// (../[slug].astro) take routing priority over rest-parameter routes, so
+// this never shadows a bottle detail page.
+export function getStaticPaths() {
+  return PRODUCTS_ENABLED ? [{ params: { hub: undefined } }] : [];
+}
 
 const bottles = (await getCollection('bottles')).sort((a, b) => b.data.rating - a.data.rating);
 const breadcrumbItems = [
