@@ -1,6 +1,7 @@
 ---
 import { SITE, AFFILIATE_DISCLOSURE_SHORT } from '@data/site';
 import { PILLARS, PILLAR_LABELS } from '@data/taxonomy';
+import { PRODUCTS_ENABLED } from '@lib/flags';
 
 const year = new Date().getFullYear();
 
@@ -49,14 +50,16 @@ const companyLinks = [
         </ul>
       </div>
 
-      <div class="column">
-        <h2 class="column-title source-label">Shop</h2>
-        <ul>
-          {shopLinks.map((link) => (
-            <li><a href={link.href}>{link.label}</a></li>
-          ))}
-        </ul>
-      </div>
+      {PRODUCTS_ENABLED && (
+        <div class="column">
+          <h2 class="column-title source-label">Shop</h2>
+          <ul>
+            {shopLinks.map((link) => (
+              <li><a href={link.href}>{link.label}</a></li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div class="column">
         <h2 class="column-title source-label">Company</h2>
@@ -71,7 +74,7 @@ const companyLinks = [
 
   <div class="legal">
     <div class="legal-inner">
-      <p class="disclosure">{AFFILIATE_DISCLOSURE_SHORT}</p>
+      {PRODUCTS_ENABLED && <p class="disclosure">{AFFILIATE_DISCLOSURE_SHORT}</p>}
       <p class="copyright">© {year} {SITE.name}. All rights reserved.</p>
     </div>
   </div>
@@ -136,7 +139,11 @@ const companyLinks = [
 
   .columns {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* auto-fit rather than a fixed repeat(3, ...): the Shop column is
+       omitted entirely when PRODUCTS_ENABLED is false, and a fixed 3-track
+       template would reserve an empty column instead of letting the
+       remaining columns fill the row. */
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
     gap: 2rem;
   }
 

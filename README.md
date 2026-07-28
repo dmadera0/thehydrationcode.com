@@ -54,6 +54,19 @@ docs/
   CMS.md                  Keystatic: turning it on, adding content, GitHub mode, dependency pins
 ```
 
+## Feature flags
+
+`PRODUCTS_ENABLED` (`src/lib/flags.ts`, unset/anything but `'true'` = false by
+default) controls the entire Best Bottles / product section: the
+`/best-bottles` index and detail routes, the "Best Bottles" nav item and
+"Shop Glass Bottles" CTAs, the homepage's bottle-recommendation section, the
+footer's Shop column and affiliate disclosure line, and the bottle OG-image
+endpoints. Nothing is deleted when it's off — content, components, and the
+affiliate registry are untouched, so flipping `PRODUCTS_ENABLED=true` (plus
+setting real affiliate tags) is all that's needed to restore the shop.
+**Amplify needs this same env var set in its console** to match whatever
+state you want live — it isn't read from a committed file in production.
+
 ## The CMS
 
 `/keystatic` is gated behind `KEYSTATIC_ENABLED=true` (unset by default). With the flag off — the

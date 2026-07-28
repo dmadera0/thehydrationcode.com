@@ -2,8 +2,10 @@ import type { APIRoute, GetStaticPaths } from 'astro';
 import sharp from 'sharp';
 import { getCollection } from 'astro:content';
 import { buildOgSvg } from '@lib/og-image';
+import { PRODUCTS_ENABLED } from '@lib/flags';
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  if (!PRODUCTS_ENABLED) return [];
   const bottles = await getCollection('bottles');
   return bottles.map((bottle) => ({
     params: { slug: bottle.id },

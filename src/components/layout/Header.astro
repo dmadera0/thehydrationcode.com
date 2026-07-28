@@ -1,7 +1,9 @@
 ---
 import { NAV } from '@data/site';
+import { PRODUCTS_ENABLED } from '@lib/flags';
 
 const currentPath = Astro.url.pathname;
+const navItems = NAV.filter((item) => PRODUCTS_ENABLED || item.href !== '/best-bottles');
 
 function isCurrent(href: string): boolean {
   if (href === '/') return currentPath === '/';
@@ -28,7 +30,7 @@ function isCurrent(href: string): boolean {
 
     <nav aria-label="Primary" class="primary-nav">
       <ul>
-        {NAV.map((item) => (
+        {navItems.map((item) => (
           <li>
             <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
               {item.label}
@@ -38,7 +40,7 @@ function isCurrent(href: string): boolean {
       </ul>
     </nav>
 
-    <a href="/best-bottles" class="cta">Shop Glass Bottles</a>
+    {PRODUCTS_ENABLED && <a href="/best-bottles" class="cta">Shop Glass Bottles</a>}
 
     <details class="mobile-nav" data-mobile-nav>
       <summary class="mobile-toggle" aria-label="Open menu">
@@ -50,7 +52,7 @@ function isCurrent(href: string): boolean {
           <button type="button" class="mobile-close" data-mobile-close aria-label="Close menu">✕</button>
         </div>
         <ul>
-          {NAV.map((item) => (
+          {navItems.map((item) => (
             <li>
               <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
                 {item.label}
@@ -58,7 +60,7 @@ function isCurrent(href: string): boolean {
             </li>
           ))}
         </ul>
-        <a href="/best-bottles" class="cta cta-mobile">Shop Glass Bottles</a>
+        {PRODUCTS_ENABLED && <a href="/best-bottles" class="cta cta-mobile">Shop Glass Bottles</a>}
       </div>
     </details>
   </div>

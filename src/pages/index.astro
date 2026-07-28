@@ -9,6 +9,7 @@ import NewsletterForm from '@components/layout/NewsletterForm.astro';
 import { SITE, HERO_STATS, HERO_COPY } from '@data/site';
 import { PILLARS, PILLAR_LABELS, PILLAR_DESCRIPTIONS, type Pillar } from '@data/taxonomy';
 import { getPublishedPosts } from '@lib/posts';
+import { PRODUCTS_ENABLED } from '@lib/flags';
 import heroImage from '../assets/images/hero/homepage-hero.jpg';
 
 const featuredPosts = (await getPublishedPosts()).slice(0, 3);
@@ -16,7 +17,9 @@ const featuredPosts = (await getPublishedPosts()).slice(0, 3);
 // hold 1–3 cards cleanly (auto-fill + minmax) so it doesn't need revisiting
 // once more posts land.
 
-const bottles = (await getCollection('bottles')).sort((a, b) => Number(b.data.editorsChoice) - Number(a.data.editorsChoice));
+const bottles = PRODUCTS_ENABLED
+  ? (await getCollection('bottles')).sort((a, b) => Number(b.data.editorsChoice) - Number(a.data.editorsChoice))
+  : [];
 
 const pillarIcons: Record<Pillar, string> = {
   'science-of-plastic':
@@ -37,7 +40,9 @@ const pillarIcons: Record<Pillar, string> = {
         <p class="hero-sub">{HERO_COPY.subtext}</p>
         <div class="hero-ctas">
           <a href="/research" class="btn-primary">{HERO_COPY.primaryCtaLabel}</a>
-          <a href="/best-bottles" class="btn-outline">{HERO_COPY.secondaryCtaLabel}</a>
+          {PRODUCTS_ENABLED && (
+            <a href="/best-bottles" class="btn-outline">{HERO_COPY.secondaryCtaLabel}</a>
+          )}
         </div>
         <p class="trust-line">{HERO_COPY.trustLine}</p>
       </div>
@@ -94,16 +99,18 @@ const pillarIcons: Record<Pillar, string> = {
     </div>
   </section>
 
-  <section class="section-block">
-    <div class="section-inner">
-      <h2>Glass bottles we actually recommend</h2>
-      <Disclosure />
-      <div class="bottle-grid">
-        {bottles.map((bottle) => <ProductCard bottle={bottle} />)}
+  {PRODUCTS_ENABLED && (
+    <section class="section-block">
+      <div class="section-inner">
+        <h2>Glass bottles we actually recommend</h2>
+        <Disclosure />
+        <div class="bottle-grid">
+          {bottles.map((bottle) => <ProductCard bottle={bottle} />)}
+        </div>
+        <a href="/best-bottles" class="view-all">View all bottles →</a>
       </div>
-      <a href="/best-bottles" class="view-all">View all bottles →</a>
-    </div>
-  </section>
+    </section>
+  )}
 
   <section class="section-block alt">
     <div class="section-inner">

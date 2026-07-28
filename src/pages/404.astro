@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
+import { PRODUCTS_ENABLED } from '@lib/flags';
 ---
 
 <BaseLayout title="Page Not Found" description="This page doesn't exist." noindex>
@@ -12,7 +13,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
     </p>
     <div class="links">
       <a href="/research" class="btn-primary">Read the Research</a>
-      <a href="/best-bottles" class="btn-outline">See Best Glass Bottles</a>
+      {PRODUCTS_ENABLED && <a href="/best-bottles" class="btn-outline">See Best Glass Bottles</a>}
     </div>
     <p class="home"><a href="/">Or start from the homepage →</a></p>
   </div>

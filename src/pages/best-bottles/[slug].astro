@@ -13,6 +13,7 @@ import BreadcrumbSchema from '@components/seo/BreadcrumbSchema.astro';
 import { resolvePrice } from '@lib/pricing';
 import { getPublishedPosts } from '@lib/posts';
 import { SITE } from '@data/site';
+import { PRODUCTS_ENABLED } from '@lib/flags';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -20,6 +21,7 @@ interface Props {
 }
 
 export async function getStaticPaths() {
+  if (!PRODUCTS_ENABLED) return [];
   const bottles = await getCollection('bottles');
   return bottles.map((bottle) => ({ params: { slug: bottle.id }, props: { bottle } }));
 }

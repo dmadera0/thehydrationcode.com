@@ -12,6 +12,7 @@ import { PILLAR_LABELS } from '@data/taxonomy';
 import { SITE } from '@data/site';
 import { getReadingMinutes } from '@lib/reading-time';
 import { getPublishedPosts } from '@lib/posts';
+import { PRODUCTS_ENABLED } from '@lib/flags';
 
 interface Props {
   post: CollectionEntry<'posts'>;
@@ -28,7 +29,11 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
   timeZone: 'UTC',
 });
-const relatedBottleEntries = relatedBottles?.length ? await getEntries(relatedBottles) : [];
+// Gated on PRODUCTS_ENABLED even though relatedBottles is unrelated to the
+// affiliate-link check below: /best-bottles/{id} pages aren't generated when
+// products are hidden, so this section would otherwise link to 404s.
+const relatedBottleEntries =
+  PRODUCTS_ENABLED && relatedBottles?.length ? await getEntries(relatedBottles) : [];
 
 // Same-pillar articles first; if that pillar doesn't have 3 others yet,
 // backfill with the newest other posts rather than showing an empty or
