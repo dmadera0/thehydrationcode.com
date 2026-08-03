@@ -22,3 +22,9 @@ Thumbs.db
 *.log
 npm-debug.log*
 pnpm-debug.log*
+
+# content pipeline
+content-pipeline/.venv/
+content-pipeline/.env
+content-pipeline/inbox/*.pdf
+content-pipeline/processed/*.pdf
