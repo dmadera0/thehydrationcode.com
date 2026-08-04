@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """
-The Hydration Code — Phase 1 draft pipeline.
+The Hydration Code — draft pipeline.
 
 Reads a PDF from content-pipeline/inbox/, verifies its DOI is real and not
 retracted, sends the full text to Claude with the article production spec,
-and writes a draft .mdx into src/content/posts/ for human review.
+extracts and programmatically verifies its major claims against the paper's
+own text, then commits the draft (article, hero image, verification report)
+onto a draft/<slug> branch and opens a pull request against main for human
+review. Nothing is ever written directly to main and nothing is auto-merged.
 
 Run:  python content-pipeline/draft_from_paper.py
-Stops at a local draft. No image, no PR, no publishing.
+Requires a clean git working tree and an authenticated `gh` CLI.
 """
 
 import os
@@ -15,6 +18,8 @@ import re
 import sys
 import glob
 import json
+import shutil
+import subprocess
 from pathlib import Path
 
 import requests
@@ -27,9 +32,11 @@ ROOT = Path(__file__).resolve().parent.parent
 INBOX = ROOT / "content-pipeline" / "inbox"
 PROCESSED = ROOT / "content-pipeline" / "processed"
 POSTS = ROOT / "src" / "content" / "posts"
+VERIFICATION_DIR = ROOT / "content-pipeline" / "verification"
 
 PILLARS = ["science-of-plastic", "why-glass-matters", "health-optimization"]
 MODEL = "claude-opus-4-8"
+BASE_BRANCH = "main"
 
 load_dotenv(ROOT / "content-pipeline" / ".env")
 API_KEY = os.environ.get("ANTHROPIC_API_KEY")
@@ -38,6 +45,55 @@ if not API_KEY:
 PEXELS_KEY = os.environ.get("PEXELS_API_KEY")
 if not PEXELS_KEY:
     sys.exit("ERROR: PEXELS_API_KEY not found in content-pipeline/.env")
+
+
+def run_git(*args, check=True):
+    return subprocess.run(
+        ["git", *args], cwd=ROOT, capture_output=True, text=True, check=check
+    )
+
+
+def ensure_clean_working_tree():
+    result = run_git("status", "--porcelain")
+    if result.stdout.strip():
+        sys.exit(
+            "Working tree is not clean (uncommitted changes present). This "
+            "pipeline creates a draft branch and commits onto it — commit or "
+            "stash your changes first, then rerun.\n\n" + result.stdout
+        )
+
+
+def ensure_gh_ready():
+    if shutil.which("gh") is None:
+        sys.exit(
+            "GitHub CLI ('gh') is not installed. Install it (e.g. `brew "
+            "install gh`) and run `gh auth login` before running this "
+            "pipeline."
+        )
+    result = subprocess.run(
+        ["gh", "auth", "status"], capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        sys.exit(
+            "GitHub CLI is not authenticated. Run `gh auth login` before "
+            "running this pipeline."
+        )
+
+
+def current_branch():
+    return run_git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip()
+
+
+def branch_exists_locally(branch):
+    result = run_git(
+        "rev-parse", "--verify", "--quiet", f"refs/heads/{branch}", check=False
+    )
+    return result.returncode == 0
+
+
+def branch_exists_remotely(branch):
+    result = run_git("ls-remote", "--heads", "origin", branch)
+    return bool(result.stdout.strip())
 
 
 def pick_pdf():
@@ -268,6 +324,116 @@ def warn_schema_issues(draft):
         print("WARNING: no sources entries found in frontmatter — schema requires at least one.")
 
 
+def extract_claims(client, article_body, paper_text):
+    """Ask the model for the article's load-bearing claims, each paired with a
+    verbatim-quoted supporting sentence from the paper. Raises on any failure —
+    caller decides how to degrade gracefully."""
+    prompt = f"""Below is a drafted article and the full text of the paper it
+is based on.
+
+Identify the article's 5-10 most specific, load-bearing factual claims
+(numbers, named effects, strong statements) and for each, find the EXACT
+sentence or phrase in the paper's full text that supports it.
+
+The supporting_quote MUST be copied character-for-character from the paper
+text below — not reworded, not summarized, not paraphrased — because it will
+be checked programmatically as a literal substring match. If a claim in the
+article does not have a verbatim-findable supporting sentence in the paper
+text, do NOT include that claim in the list — a human will review it
+directly instead.
+
+Output ONLY a JSON array, no commentary, no markdown code fences, in this
+exact shape:
+[{{"claim": "short paraphrase of the claim as it appears in the article", "supporting_quote": "exact verbatim text from the paper"}}]
+
+ARTICLE:
+<article>
+{article_body}
+</article>
+
+PAPER FULL TEXT:
+<paper>
+{paper_text[:120000]}
+</paper>"""
+    resp = client.messages.create(
+        model=MODEL,
+        max_tokens=4000,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    text = "".join(b.text for b in resp.content if b.type == "text").strip()
+    text = re.sub(r"^```(json)?\n", "", text)
+    text = re.sub(r"\n```$", "", text)
+    claims = json.loads(text)
+    if not isinstance(claims, list):
+        raise ValueError("model did not return a JSON array")
+    return claims
+
+
+def normalize_for_match(s):
+    return re.sub(r"\s+", " ", s).strip().lower()
+
+
+def verify_claims(claims, paper_text):
+    """Deterministic check: does each claim's supporting_quote actually appear
+    in the paper's extracted text? No model call — this is the real check."""
+    normalized_paper = normalize_for_match(paper_text)
+    results = []
+    for c in claims:
+        claim = str(c.get("claim", "")).strip()
+        quote = str(c.get("supporting_quote", "")).strip()
+        if not claim or not quote:
+            continue
+        found = normalize_for_match(quote) in normalized_paper
+        results.append(
+            {"claim": claim, "quote": quote, "status": "VERIFIED" if found else "NOT FOUND"}
+        )
+    return results
+
+
+def build_verification_md(meta, article_title, results, claims_error=None):
+    lines = [f"# Verification report — {article_title}", ""]
+    lines.append(
+        f"Source: {meta['title']} — {meta['journal']}, {meta['year']} — "
+        f"DOI: {meta['doi']}"
+    )
+    lines.append("Verified real via Crossref: yes (not retracted)")
+    lines.append("")
+    lines.append("## Claims checked against source text")
+    lines.append("")
+
+    if claims_error:
+        lines.append(
+            f"Automated claim verification could not run ({claims_error}). "
+            f"All claims in this article require manual verification against "
+            f"the source PDF before merging."
+        )
+        return "\n".join(lines) + "\n"
+
+    if not results:
+        lines.append(
+            "No auto-checkable claims were extracted. All claims in this "
+            "article require manual verification against the source PDF "
+            "before merging."
+        )
+        return "\n".join(lines) + "\n"
+
+    lines.append("| # | Claim | Status | Supporting quote |")
+    lines.append("|---|---|---|---|")
+    for i, r in enumerate(results, 1):
+        claim_cell = r["claim"].replace("|", "\\|").replace("\n", " ")
+        quote_cell = r["quote"].replace("|", "\\|").replace("\n", " ")
+        lines.append(f'| {i} | {claim_cell} | {r["status"]} | "{quote_cell}" |')
+
+    verified = sum(1 for r in results if r["status"] == "VERIFIED")
+    lines.append("")
+    lines.append(
+        f"{verified} of {len(results)} claims auto-verified. Any NOT FOUND or "
+        f"any claim not listed here needs manual verification against the "
+        f"source PDF before merging."
+    )
+    return "\n".join(lines) + "\n"
+
+
 def fetch_hero_image(keywords, slug):
     """Search Pexels for a landscape photo matching the keywords, download it."""
     query = " ".join(keywords[:3]) if keywords else "glass water bottle"
@@ -295,6 +461,9 @@ def fetch_hero_image(keywords, slug):
     return dest
 
 def main():
+    ensure_clean_working_tree()
+    ensure_gh_ready()
+
     pdf = pick_pdf()
     print(f"Reading: {pdf.name}")
     text = extract_text(pdf)
@@ -334,14 +503,22 @@ def main():
 
     slug = slugify(meta["title"])
     out = POSTS / f"{slug}.mdx"
-    if out.exists():
+    branch = f"draft/{slug}"
+
+    local_exists = branch_exists_locally(branch)
+    remote_exists = branch_exists_remotely(branch)
+    if local_exists or remote_exists:
+        where = " and ".join(
+            w for w, present in (("locally", local_exists), ("on origin", remote_exists)) if present
+        )
         answer = input(
-            f"A draft already exists at {out.relative_to(ROOT)}. Overwrite? (y/n) "
+            f"A draft branch already exists at {branch} ({where}). Overwrite? (y/n) "
         ).strip().lower()
         if answer != "y":
-            print(f"Kept existing file: {out.relative_to(ROOT)}. No changes written.")
+            print(f"Kept existing branch: {branch}. No changes written.")
             return
 
+    # ---- fit/validate the draft (all pure text transforms, no git yet) ----
     draft = fit_field(client, draft, "title", 70, meta["title"])
     draft = fit_field(client, draft, "dek", 165, meta["title"])
     draft = strip_manual_sourcelist(draft)
@@ -356,29 +533,119 @@ def main():
         draft,
         count=1,
     )
+
+    title_match = re.search(r'^title: "(.*)"$', draft, re.MULTILINE)
+    article_title = title_match.group(1) if title_match else meta["title"]
+
+    print("Extracting and verifying claims against the source paper...")
+    claims_error = None
+    results = []
+    try:
+        claims = extract_claims(client, draft, text)
+        results = verify_claims(claims, text)
+        verified_n = sum(1 for r in results if r["status"] == "VERIFIED")
+        print(f"  {verified_n} of {len(results)} claims verified against paper text.")
+    except Exception as e:
+        claims_error = str(e)
+        print(f"  WARNING: automated claim verification failed ({claims_error}).")
+        print("  PR will note that all claims need manual review.")
+
+    verification_md = build_verification_md(meta, article_title, results, claims_error)
+    verification_path = VERIFICATION_DIR / f"{slug}-VERIFICATION.md"
+
+    # ---- everything above is pure computation; from here on we touch git ----
+    if current_branch() != BASE_BRANCH:
+        print(f"Not on {BASE_BRANCH} (on {current_branch()}) — checking out {BASE_BRANCH} first.")
+        run_git("checkout", BASE_BRANCH)
+
+    print(f"Creating branch {branch}...")
+    run_git("checkout", "-B", branch)
+
+    VERIFICATION_DIR.mkdir(parents=True, exist_ok=True)
+    out.write_text(draft)
     img = fetch_hero_image(keywords, slug)
     if not img:
         print(
             f"⚠  WARNING: Pexels image fetch failed. Frontmatter heroImage points "
             f"to src/assets/images/posts/{slug}.jpg, but that file was not "
             f"created. Add a commercially-licensed image there by hand before "
-            f"running `pnpm build` — the build will fail on the missing file "
-            f"otherwise."
+            f"merging — the build will fail on the missing file otherwise."
         )
-    out.write_text(draft)
+    verification_path.write_text(verification_md)
+
+    add_paths = [str(out), str(verification_path)]
+    if img:
+        add_paths.append(str(img))
+    run_git("add", *add_paths)
+    run_git("commit", "-m", f"draft: {article_title}")
+
+    print(f"Pushing {branch} to origin...")
+    push_args = ["push", "-u", "origin", branch]
+    if remote_exists:
+        push_args.append("--force")
+    push_result = run_git(*push_args, check=False)
+    if push_result.returncode != 0:
+        print(f"git push failed:\n{push_result.stderr}")
+        run_git("checkout", BASE_BRANCH)
+        sys.exit(
+            f"Push failed — see error above. The commit is on local branch "
+            f"{branch}; fix the issue and push manually, or rerun."
+        )
+
+    pr_body = (
+        f"Source paper: {meta['title']} — {meta['journal']}, {meta['year']} "
+        f"(DOI: {meta['doi']})\n\n"
+        f"Review flagged claims before merging. Merging deploys automatically.\n\n"
+        f"---\n\n"
+        f"{verification_md}"
+    )
+
+    print("Opening pull request...")
+    pr_create = subprocess.run(
+        [
+            "gh", "pr", "create",
+            "--title", article_title,
+            "--body", pr_body,
+            "--base", BASE_BRANCH,
+            "--head", branch,
+        ],
+        cwd=ROOT, capture_output=True, text=True,
+    )
+    pr_url = None
+    if pr_create.returncode == 0:
+        pr_url = pr_create.stdout.strip().splitlines()[-1] if pr_create.stdout.strip() else None
+    else:
+        existing = subprocess.run(
+            ["gh", "pr", "view", branch, "--json", "url", "-q", ".url"],
+            cwd=ROOT, capture_output=True, text=True,
+        )
+        if existing.returncode == 0 and existing.stdout.strip():
+            pr_url = existing.stdout.strip()
+            print(f"A PR already exists for {branch}: {pr_url}")
+        else:
+            print(f"gh pr create failed:\n{pr_create.stderr}")
+
+    print(f"Checking out {BASE_BRANCH}...")
+    run_git("checkout", BASE_BRANCH)
 
     PROCESSED.mkdir(exist_ok=True)
     pdf.rename(PROCESSED / pdf.name)
 
     needs = draft.count("NEEDS SOURCE")
     print("\n" + "=" * 60)
-    print(f"DRAFT WRITTEN: {out.relative_to(ROOT)}")
+    print(f"BRANCH: {branch}")
+    if pr_url:
+        print(f"PR OPENED: {pr_url}")
+    else:
+        print(f"PR was NOT created — see the error above. {branch} is still")
+        print("pushed to origin; open the PR manually.")
     print(f"Source PDF moved to: content-pipeline/processed/{pdf.name}")
     if needs:
         print(f"⚠  {needs} NEEDS SOURCE marker(s) — resolve before publishing.")
-    print("\nNEXT: read the draft critically. Confirm the frontmatter, the")
-    print("pillar, the hero image, and that every claim traces to the paper.")
-    print("Then run `pnpm check` and `pnpm build`.")
+    if claims_error:
+        print("⚠  Automated claim verification did not run — all claims need manual review.")
+    print("\nNEXT: review the PR, especially any NOT FOUND claims in")
+    print("VERIFICATION.md, before merging. Merging deploys automatically.")
     print("=" * 60)
 
 
