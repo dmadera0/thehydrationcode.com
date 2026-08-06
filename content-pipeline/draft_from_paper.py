@@ -434,6 +434,41 @@ def build_verification_md(meta, article_title, results, claims_error=None):
     return "\n".join(lines) + "\n"
 
 
+def ensure_dependencies_installed():
+    """Run `pnpm install` only if node_modules is missing or older than the
+    lockfile — reuse the existing install otherwise so the build check stays
+    fast on every normal run."""
+    node_modules = ROOT / "node_modules"
+    lockfile = ROOT / "pnpm-lock.yaml"
+    stale = (
+        not node_modules.exists()
+        or (lockfile.exists() and lockfile.stat().st_mtime > node_modules.stat().st_mtime)
+    )
+    if not stale:
+        return
+    print("node_modules missing or older than pnpm-lock.yaml — running pnpm install...")
+    result = subprocess.run(
+        ["pnpm", "install"], cwd=ROOT, capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        sys.exit(
+            "pnpm install failed — cannot run the build check. Output:\n\n"
+            + result.stdout + result.stderr
+        )
+
+
+def run_build_check():
+    """Build the site with the draft's files present, exactly as Amplify
+    would. Returns (passed: bool, output: str)."""
+    print("Running build check (pnpm build) against the draft branch...")
+    ensure_dependencies_installed()
+    result = subprocess.run(
+        ["pnpm", "build"], cwd=ROOT, capture_output=True, text=True
+    )
+    output = result.stdout + result.stderr
+    return result.returncode == 0, output
+
+
 def fetch_hero_image(keywords, slug):
     """Search Pexels for a landscape photo matching the keywords, download it."""
     query = " ".join(keywords[:3]) if keywords else "glass water bottle"
@@ -579,6 +614,21 @@ def main():
     run_git("add", *add_paths)
     run_git("commit", "-m", f"draft: {article_title}")
 
+    build_passed, build_output = run_build_check()
+    if not build_passed:
+        print(
+            "Build check failed. This draft would break the live site if "
+            "merged. Build output:\n\n" + build_output
+        )
+        run_git("checkout", BASE_BRANCH)
+        run_git("branch", "-D", branch)
+        sys.exit(
+            "Build check failed — stopping. No branch was pushed and no PR "
+            "was opened. The working tree is back on "
+            f"{BASE_BRANCH} with the draft branch deleted."
+        )
+    print("Build check passed.")
+
     print(f"Pushing {branch} to origin...")
     push_args = ["push", "-u", "origin", branch]
     if remote_exists:
@@ -593,6 +643,7 @@ def main():
         )
 
     pr_body = (
+        f"Build check: passed\n\n"
         f"Source paper: {meta['title']} — {meta['journal']}, {meta['year']} "
         f"(DOI: {meta['doi']})\n\n"
         f"Review flagged claims before merging. Merging deploys automatically.\n\n"
