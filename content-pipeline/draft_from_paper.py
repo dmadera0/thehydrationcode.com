@@ -19,6 +19,7 @@ import sys
 import glob
 import json
 import shutil
+import hashlib
 import subprocess
 from pathlib import Path
 
@@ -32,7 +33,17 @@ ROOT = Path(__file__).resolve().parent.parent
 INBOX = ROOT / "content-pipeline" / "inbox"
 PROCESSED = ROOT / "content-pipeline" / "processed"
 POSTS = ROOT / "src" / "content" / "posts"
+IMAGES_DIR = ROOT / "src" / "assets" / "images" / "posts"
 VERIFICATION_DIR = ROOT / "content-pipeline" / "verification"
+
+# Registry of Pexels photo IDs already used as a hero image, so future runs
+# can skip a duplicate without downloading it first. Images saved before this
+# registry existed were never tagged with their source photo ID, so there's
+# no way to backfill it for them — that's fine, because the registry is only
+# a fast first-pass check. The real dedup mechanism (see fetch_hero_image) is
+# a content-hash comparison against every file already in IMAGES_DIR, which
+# catches duplicates of ANY existing image, registry or not.
+USED_IMAGES_REGISTRY = ROOT / "content-pipeline" / "used_images.json"
 
 PILLARS = ["science-of-plastic", "why-glass-matters", "health-optimization"]
 MODEL = "claude-opus-4-8"
@@ -469,14 +480,48 @@ def run_build_check():
     return result.returncode == 0, output
 
 
+def load_used_image_ids():
+    if not USED_IMAGES_REGISTRY.exists():
+        return set()
+    try:
+        return set(json.loads(USED_IMAGES_REGISTRY.read_text()))
+    except (json.JSONDecodeError, ValueError):
+        return set()
+
+
+def save_used_image_ids(ids):
+    USED_IMAGES_REGISTRY.write_text(json.dumps(sorted(ids), indent=2) + "\n")
+
+
+def existing_image_hashes(exclude_slug):
+    """SHA-256 of every hero image already on disk, keyed by hash, so a fresh
+    download can be checked for duplicates regardless of where the existing
+    file came from. Excludes this article's own slug — on an overwrite run,
+    that file is expected to match whatever gets downloaded for it."""
+    hashes = {}
+    if not IMAGES_DIR.exists():
+        return hashes
+    exclude_name = f"{exclude_slug}.jpg"
+    for path in IMAGES_DIR.glob("*.jpg"):
+        if path.name == exclude_name:
+            continue
+        hashes[hashlib.sha256(path.read_bytes()).hexdigest()] = path
+    return hashes
+
+
 def fetch_hero_image(keywords, slug):
-    """Search Pexels for a landscape photo matching the keywords, download it."""
+    """Search Pexels for a landscape photo matching the keywords, download it
+    — skipping any candidate that duplicates a hero image already on the
+    site. Content hash is checked against every existing file (catches any
+    duplicate, however it got there); the Pexels photo ID is checked against
+    used_images.json first as a cheap way to skip an already-used photo
+    without downloading it."""
     query = " ".join(keywords[:3]) if keywords else "glass water bottle"
     print(f"Searching Pexels for: {query}")
     r = requests.get(
         "https://api.pexels.com/v1/search",
         headers={"Authorization": PEXELS_KEY},
-        params={"query": query, "orientation": "landscape", "per_page": 5, "size": "large"},
+        params={"query": query, "orientation": "landscape", "per_page": 10, "size": "large"},
         timeout=30,
     )
     if r.status_code != 200:
@@ -486,13 +531,63 @@ def fetch_hero_image(keywords, slug):
     if not photos:
         print("  No Pexels results. Leaving placeholder path.")
         return None
-    img_url = photos[0]["src"]["large2x"]
-    dest = POSTS.parent.parent / "assets" / "images" / "posts" / f"{slug}.jpg"
+
+    used_ids = load_used_image_ids()
+    existing_hashes = existing_image_hashes(slug)
+    dest = IMAGES_DIR / f"{slug}.jpg"
     dest.parent.mkdir(parents=True, exist_ok=True)
-    img = requests.get(img_url, timeout=60)
-    dest.write_bytes(img.content)
+
+    # Best duplicate found so far, kept only in case every candidate turns
+    # out to be a repeat and we have to fall back to one of them. Preferring
+    # the one whose on-disk match is oldest (least recently reused) keeps a
+    # forced repeat as unobtrusive as possible.
+    fallback = None  # (photo, content_bytes, matched_file_mtime)
+    first_unchecked = None  # (photo, content_bytes) — first ID-only skip, downloaded lazily
+
+    for i, photo in enumerate(photos):
+        photo_id = photo.get("id")
+        if photo_id in used_ids:
+            if first_unchecked is None:
+                first_unchecked = (photo, None)
+            continue
+
+        img_url = photo["src"]["large2x"]
+        content = requests.get(img_url, timeout=60).content
+        content_hash = hashlib.sha256(content).hexdigest()
+        matched_path = existing_hashes.get(content_hash)
+
+        if matched_path is None:
+            dest.write_bytes(content)
+            used_ids.add(photo_id)
+            save_used_image_ids(used_ids)
+            print(f"  Image saved: {dest.relative_to(ROOT)} (Pexels result #{i + 1})")
+            print(f"  Photo by {photo.get('photographer','?')} on Pexels")
+            return dest
+
+        mtime = matched_path.stat().st_mtime
+        if fallback is None or mtime < fallback[2]:
+            fallback = (photo, content, mtime)
+
+    if fallback is None and first_unchecked is not None:
+        photo, _ = first_unchecked
+        content = requests.get(photo["src"]["large2x"], timeout=60).content
+        fallback = (photo, content, 0)
+
+    if fallback is None:
+        print("  No usable Pexels results. Leaving placeholder path.")
+        return None
+
+    photo, content, _ = fallback
+    print(
+        f"  All top Pexels results for '{query}' are already in use on the "
+        f"site. Using a repeat image — consider a more specific search "
+        f"query or manually replacing this image later."
+    )
+    dest.write_bytes(content)
+    used_ids.add(photo.get("id"))
+    save_used_image_ids(used_ids)
     print(f"  Image saved: {dest.relative_to(ROOT)}")
-    print(f"  Photo by {photos[0].get('photographer','?')} on Pexels")
+    print(f"  Photo by {photo.get('photographer','?')} on Pexels")
     return dest
 
 def main():
