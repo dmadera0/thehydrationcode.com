@@ -1,9 +1,13 @@
 ---
 /**
- * The only client-side JS on the homepage. Progressive enhancement: with JS
- * disabled this is a plain POST to PUBLIC_NEWSLETTER_ENDPOINT (Kit/Beehiiv
- * handle the redirect); with JS it submits via fetch and swaps in inline
- * loading/success/error states instead of navigating away.
+ * The only client-side JS on the homepage. PUBLIC_NEWSLETTER_ENDPOINT is the
+ * forms Lambda (see infra/forms-lambda) — it expects a JSON body of
+ * { email, type, company } (company is the honeypot; empty for a real
+ * submit), shared with the /contact form via the `type` field. That means
+ * there's no meaningful no-JS fallback: a native browser form POST would
+ * send url-encoded data, which the Lambda can't parse as JSON. The <form>
+ * action/method attributes stay as sane defaults for semantic HTML, but the
+ * real submission always goes through the fetch handler below.
  */
 const endpoint = import.meta.env.PUBLIC_NEWSLETTER_ENDPOINT || '';
 ---
@@ -77,8 +81,12 @@ const endpoint = import.meta.env.PUBLIC_NEWSLETTER_ENDPOINT || '';
       try {
         const response = await fetch(endpoint, {
           method: 'POST',
-          body: new FormData(form),
-          headers: { Accept: 'application/json' },
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            email: email.value,
+            type: 'newsletter',
+            company: honeypot instanceof HTMLInputElement ? honeypot.value : '',
+          }),
         });
         if (!response.ok) throw new Error('Request failed');
         setMessage("You're on the list. Check your inbox to confirm.", 'success');

@@ -1,0 +1,13 @@
+{
+  "name": "forms-lambda",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AWS Lambda handler for The Hydration Code's newsletter and contact form submissions — appends validated rows to a shared Google Sheet.",
+  "main": "index.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "googleapis": "^174.0.0"
+  }
+}

@@ -1,0 +1,12 @@
+# Never commit the service account key or any local test credentials.
+# The Lambda reads GOOGLE_CLIENT_EMAIL / GOOGLE_PRIVATE_KEY / GOOGLE_SHEET_ID
+# from environment variables — a JSON key file should only ever exist here
+# temporarily, for local testing, and never leave your machine.
+service-account*.json
+credentials*.json
+*.pem
+.env
+.env.*
+
+node_modules/
+*.zip

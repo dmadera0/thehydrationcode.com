@@ -85,9 +85,10 @@ upgrading Astro — several dependencies are pinned deliberately against the cur
       launch, real product photos and hero art are not in place
 - [ ] `Organization.logo` and `Article.publisher.logo` point at `public/logo-600x60.png`, a generated
       placeholder wordmark — swap for real brand art
-- [ ] Contact email (`hello@thehydrationcode.com`, used on the legal pages) is a placeholder — set up
-      a real inbox before publishing those pages
-- [ ] `PUBLIC_NEWSLETTER_ENDPOINT` is blank — the form degrades gracefully but doesn't send anywhere yet
+- [ ] The legal pages and footer link to `/contact` instead of a mailto address. The form (and the
+      newsletter signup) both need `infra/forms-lambda` deployed and `PUBLIC_NEWSLETTER_ENDPOINT` set
+      before either one can actually submit — see `infra/forms-lambda/README.md`
+- [ ] `PUBLIC_NEWSLETTER_ENDPOINT` is blank — both forms degrade gracefully but don't send anywhere yet
 - [ ] Amplify's `amplify.yml` assumes `KEYSTATIC_ENABLED` stays unset in production. If that ever
       changes, `docs/CMS.md` has the deployment implications
 - [ ] `pnpm check` and `pnpm build` both pass clean
