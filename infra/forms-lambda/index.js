@@ -26,6 +26,7 @@ const HONEYPOT_FIELD = 'company';
 const ALLOWED_ORIGINS = [
   'https://thehydrationcode.com',
   'https://www.thehydrationcode.com',
+  'http://localhost:4321',
 ];
 // Amplify URLs look like https://<app-id>.amplifyapp.com (default domain) or
 // https://<branch>.<app-id>.amplifyapp.com (branch/PR previews) — one or more
