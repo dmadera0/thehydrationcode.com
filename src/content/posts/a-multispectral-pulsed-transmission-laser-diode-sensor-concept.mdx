@@ -1,0 +1,103 @@
+---
+title: "Can a Laser Spot Microplastics in Water in Real Time?"
+dek: "Lab methods can't test in the field. This sensor concept uses three laser-diode lines to screen microplastics in water—here's how it works, and its limits."
+pillar: "science-of-plastic"
+publishedAt: 2026-07-24
+heroImage: "../../assets/images/posts/a-multispectral-pulsed-transmission-laser-diode-sensor-concept.jpg"
+heroAlt: "A narrow visible laser beam passing through a clear glass tube of water in a laboratory setting"
+featured: false
+draft: false
+sources:
+  - label: "Sensors, 2026"
+    title: "A Multispectral Pulsed-Transmission Laser-Diode Sensor Concept for Real-Time In Situ Assessment of Microplastics in Water"
+    publisher: "Sensors (MDPI)"
+    year: 2026
+    url: "https://doi.org/10.3390/s26144594"
+    doi: "10.3390/s26144594"
+faq:
+  - q: "Can this laser sensor replace lab tests like FTIR or Raman?"
+    a: "No. The authors are explicit that it does not provide chemical confirmation of polymer identity and is positioned as a complementary field-screening layer, not a replacement for confirmatory laboratory spectroscopy."
+  - q: "How small a particle can it detect?"
+    a: "The theoretical range runs from tens of micrometers to sub-millimeter, but in the proof-of-concept setup with a ~3.5 mm beam the practical lower limit is closer to 250–300 µm. A ~1 mm beam would extend this toward roughly 100 µm."
+  - q: "Has this actually been tested on real microplastics?"
+    a: "Not in this paper. It is a model-based proof of concept. The authors state that experimental verification on real reference particles is reported separately, in a companion paper."
+---
+
+Most of what we know about microplastics in water comes from instruments that never see the water. A sample is filtered, digested, dried, carried to a lab, and only then read by an infrared or Raman spectrometer. That workflow is accurate, but it is slow, and it cannot watch a river change hour to hour.
+
+A 2026 paper in *Sensors* proposes a different starting point: a compact optical sensor that assesses microplastics *directly in the water*, in real time, using nothing more exotic than three synchronized visible laser-diode lines and a physics-based model to interpret what comes through.<Citation id="Sensors, 2026" /> It is a concept-and-theory study—not a validated field device—but the measurement model it lays out is worth understanding, because it points at where portable microplastic monitoring may be headed.
+
+<KeyTakeaways>
+- Standard lab methods (FTIR, Raman, Py-GC/MS) identify polymers accurately but require sampling, filtration, digestion, and delayed lab analysis—unsuited to continuous, in-water monitoring.<Citation id="Sensors, 2026" />
+- The proposed sensor shines three visible laser wavelengths (490, 520, and 640 nm) through flowing water and measures how a single passing particle dims the directly transmitted beam.<Citation id="Sensors, 2026" />
+- By modeling the signal, it separates a particle's *geometry* from its *material*, recovering an absorption "fingerprint" that maps each polymer to a bounded region in a three-wavelength absorption space.<Citation id="Sensors, 2026" />
+- In principle, this could tell apart chemically identical polymers with different structure—like low- and high-density polyethylene—which standard vibration-based methods struggle to routinely resolve.<Citation id="Sensors, 2026" />
+- This is a model-based proof of concept, not full environmental validation. Experimental verification on real particles is reported in a separate companion paper.<Citation id="Sensors, 2026" />
+</KeyTakeaways>
+
+## Why field monitoring is the hard part
+
+Microplastics are commonly defined as plastic particles smaller than 5 mm, though the practical detection limit depends heavily on the method used.<Citation id="Sensors, 2026" /> The scale of the underlying problem is large: the paper notes that global plastics production reached 400.3 Mt in 2022, the material flow from which environmental contamination arises.<Citation id="Sensors, 2026" />
+
+The analytical bottleneck is that the established methods are laboratory-based. FTIR, Raman spectroscopy, and pyrolysis–GC/MS all deliver polymer-specific information, but they typically require sampling, filtration, extraction, digestion, drying, transport, instrumental analysis, and extensive post-processing, alongside strict contamination control and quality-assurance procedures.<Citation id="Sensors, 2026" />
+
+There is a subtler problem too. The same drinking-water sample set can yield markedly different particle counts, size distributions, and exposure estimates depending on whether µFTIR or µRaman is applied.<Citation id="Sensors, 2026" /> In dynamic environments—rivers, reservoirs, industrial discharge, treatment systems—where particle concentration and character change over time, there is real value in a method that can operate directly in water with minimal handling and rapid signal acquisition.<Citation id="Sensors, 2026" />
+
+The authors are careful about framing. The goal is not to replace validated lab methods but to add a complementary screening layer for early detection, event detection, and trend monitoring in the field.<Citation id="Sensors, 2026" />
+
+## The core idea: dim a beam, then decode the shadow
+
+The setup is deliberately simple. Three visible laser-diode lines are combined into one beam, sent through a transparent water channel, and read on the other side by fast detectors. The system first calibrates on particle-free water, recording a stable optical baseline. Then, when a particle drifts through the illuminated volume, it removes some light from the directly transmitted beam.<Citation id="Sensors, 2026" />
+
+Crucially, the detector only accepts light still aligned with the original beam axis. Any light scattered, reflected, or diffracted off-axis counts as a loss—as "extinction." So the measured signal for each wavelength reduces to a water-normalized transmission whose *deficit* is what the particle added or subtracted.<Citation id="Sensors, 2026" />
+
+<StatBlock value="490 / 520 / 640 nm" label="The three synchronized laser-diode wavelengths used in the proof-of-concept" sourceId="Sensors, 2026" />
+
+Why only three wavelengths? The authors treat it as an engineering compromise. Earlier work by the same group used a metal-vapor laser capable of many discrete lines, but more channels mean more complexity in beam-combining, synchronization, alignment, and processing. Three diode lines are described as the minimal set needed to constrain the model while keeping the source small, portable, and field-deployable.<Citation id="Sensors, 2026" />
+
+## Separating "what shape" from "what plastic"
+
+A single transmission value cannot tell you the polymer type, because it tangles together two very different things: how much of the beam the particle blocks (geometry), and how strongly the particle's material removes light (a mix of material and geometry).<Citation id="Sensors, 2026" /> The whole point of the model is to untangle them.
+
+The material side rests on a piece of physics called the Urbach tail. In the visible range, the optical band gap of common polymers is large, so visible light probes a smooth "sub-gap" absorption tail rather than sharp molecular vibration bands. That tail follows a two-parameter exponential form, which is why three wavelengths are enough to pin down the absorption trend.<Citation id="Sensors, 2026" />
+
+The geometry side uses an "effective optical length"—essentially the particle's volume divided by its projected cross-section—so that a particle presents different optical lengths, and therefore different absorption, as its orientation changes during transit.<Citation id="Sensors, 2026" /> A third piece, the probability of direct transmission, is derived from the Fresnel reflection relations and handles the fact that real particles have tilted, rough microsurfaces that scatter light out of the beam rather than casting a clean shadow.<Citation id="Sensors, 2026" />
+
+Put together, these feed a coupled nonlinear system that is solved numerically. Because the shape isn't known in advance, it's solved across candidate shape classes, and the result is reported as *bounds* on the absorption coefficient rather than a single exact value.<Citation id="Sensors, 2026" />
+
+## The differentiator: telling LDPE from HDPE
+
+Here is the claim that makes the concept interesting. Because each polymer's absorption is set by its band gap and structural state, every polymer occupies a bounded region—a "volume"—in the three-wavelength absorption space. Locating a particle in that space assigns it to a polymer class.<Citation id="Sensors, 2026" />
+
+That opens a door standard methods find awkward. Low-density and high-density polyethylene are chemically identical, so FTIR and Raman typically classify both simply as "polyethylene" and resolve the structural difference only with extra crystallinity-sensitive analysis. But because LDPE and HDPE differ in band gap and disorder, the model places them in distinct regions of absorption space—so the method can, in principle, tell them apart.<Citation id="Sensors, 2026" />
+
+In the modeled results, polypropylene sits well below both polyethylenes at all three wavelengths. LDPE and HDPE overlap near 490 and 520 nm but separate progressively toward 640 nm, where the red channel carries most of the discrimination.<Citation id="Sensors, 2026" />
+
+<Callout variant="note">
+The paper phrases this discrimination carefully: it is a capability that *complements* rather than reproduces the chemical specificity of FTIR, Raman, or Py-GC/MS. It measures the absorption tail, not the molecular vibrational fingerprint—a different axis of information, not a better version of the same one.
+</Callout>
+
+## How honest is the paper about its limits?
+
+Very. This is where the study earns credibility rather than losing it.
+
+First, it is explicit that this is a sensor concept with a model-based proof of concept, not full environmental validation. The forward-and-inverse model is exercised with representative optical parameters for three polyolefins; experimental verification on real reference particles is reported in a separate companion paper.<Citation id="Sensors, 2026" />
+
+Second, the size range is honestly bounded. The theoretical target runs from tens of micrometers to sub-millimeter, but with the proof-of-concept ~3.5 mm beam, the practical lower limit is closer to 250–300 µm; a narrower ~1 mm beam would push it toward roughly 100 µm.<Citation id="Sensors, 2026" />
+
+Third, the authors list real-world interference plainly: mineral particles, organic matter, air bubbles, turbidity, biofilms, and aged or aggregated microplastics can all complicate the reading. They propose mitigations—a genuine particle crossing produces a structured, brief deficit correlated across the three lines, distinguishable from slow turbidity drift, and strongly scattering bubbles or aggregates push extinction toward one across all wavelengths and get flagged as non-invertible and rejected rather than misclassified.<Citation id="Sensors, 2026" />
+
+<Callout variant="warning">
+The shape model uses only sphere, disk, and cylinder classes. The authors state plainly this is a first approximation that does not span the morphological diversity of real environmental particles—irregular fragments, fibers, and aggregates fall outside the current basis and will need an extended shape library or data-driven inference.<Citation id="Sensors, 2026" />
+</Callout>
+
+A noise analysis backs up the caution. A Monte-Carlo study propagating detector noise, ~1% laser-power fluctuation, uncertainty in the transmission probability, and particle-to-particle variability found the polymer clouds stay separated under realistic conditions—but the LDPE/HDPE separation degrades below roughly 30–35 dB effective signal-to-noise, and holds only if the direct-transmission probability stays within its stated band.<Citation id="Sensors, 2026" />
+
+## What this actually means for you
+
+For now, nothing changes in how microplastics are officially measured. Confirmatory identification still belongs to the lab. What this paper describes is a plausible route toward *continuous* monitoring—a compact device that could sit in a water line and flag when particle loads or polymer types shift, rather than waiting weeks for a lab result.<Citation id="Sensors, 2026" />
+
+Its own author's framing is the right one to keep: a complementary screening layer, at technology-readiness level TRL-4 in the lab, built from off-the-shelf components, with real-particle validation still to be demonstrated.<Citation id="Sensors, 2026" /> That is an early but concrete step. If you follow microplastics research, this is the category to watch—not because it answers the exposure question, but because it could finally make the measurement continuous, cheap, and in the water itself.
+
+IMAGE_KEYWORDS: laser beam through water, laboratory optics, glass tube water sample
+$
