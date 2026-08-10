@@ -203,8 +203,6 @@ substitute for the real component signatures.**
 - `<Callout>` — boxed aside. Variants: `note`, `warning`, `key`. Use for
   caveats, limitations, and important context.
 - `<KeyTakeaways>` — bulleted summary box for the top of long articles.
-- `<ComparisonTable ... />` — responsive table for head-to-head comparisons;
-  scrolls horizontally on mobile.
 
 Constraint: components must not introduce client-side JavaScript. Keep articles
 zero-JS.
