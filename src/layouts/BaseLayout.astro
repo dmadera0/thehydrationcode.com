@@ -45,27 +45,18 @@ const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
     <meta name="twitter:description" content={description} />
     {ogImage && <meta name="twitter:image" content={new URL(ogImage, SITE.url).toString()} />}
 
-    {plausibleDomain && (
-      <script
-        is:inline
-        defer
-        data-domain={plausibleDomain}
-        src="https://plausible.io/js/script.outbound-links.js"
-      ></script>
-    )}
+    <!-- Google Analytics 4 -->
+    <script type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id=G-EB38E6PWE0"></script>
+    <script type="text/partytown">
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-EB38E6PWE0');
+    </script>
 
     <OrganizationSchema />
     <WebSiteSchema />
   </head>
-  <body>
-    <a href="#content" class="skip-link">Skip to content</a>
-    {chrome && <Header />}
-    <main id="content">
-      <slot />
-    </main>
-    {chrome && <Footer />}
-  </body>
-</html>
 
 <style>
   .skip-link {
