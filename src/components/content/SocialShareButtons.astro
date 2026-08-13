@@ -1,0 +1,282 @@
+---
+/**
+ * Icon-only share row for the end of an article. Mirrors the pattern in
+ * NewsletterForm.astro / ContactForm.astro: static markup with a small
+ * scoped <script> island for the parts that genuinely need the client
+ * (popup windows, clipboard). Everything else is computed once at render
+ * time in this frontmatter.
+ */
+import { SITE } from '@data/site';
+
+interface Props {
+  /** Article title. Used as share text / email subject. */
+  title: string;
+  /** Canonical URL, absolute or a path relative to SITE.url. */
+  url: string;
+  /** Optional dek/summary. Used in the email body and Pinterest description. */
+  description?: string;
+}
+
+const { title, url, description = '' } = Astro.props;
+
+// Callers may pass a path (e.g. Astro.url.pathname) instead of a full
+// canonical URL — resolve against the site root so this never breaks on a
+// relative input. An empty/missing url resolves to the site root itself
+// rather than throwing.
+const absoluteUrl = new URL(url || '/', SITE.url).toString();
+
+/**
+ * Appends this site's standard social-share UTM parameters to a URL.
+ *
+ * Every share surface below — every social intent, the copied link, and
+ * the email body — reuses this SAME tagged URL rather than each building
+ * its own. That's deliberate: it means a link a reader pastes somewhere is
+ * tagged identically to one they get from clicking a share button, so
+ * analytics can't silently undercount one path relative to the other.
+ *
+ * Uses the URL/URLSearchParams API instead of string concatenation so
+ * values are encoded correctly regardless of what's already in the URL
+ * (existing query params, reserved characters, etc.) — no risk of
+ * double-encoding or a malformed query string from naive `+ '&x=' +` chains.
+ */
+function withShareUtm(rawUrl: string): string {
+  const tagged = new URL(rawUrl);
+  tagged.searchParams.set('utm_source', 'thehydrationcode');
+  tagged.searchParams.set('utm_medium', 'social');
+  tagged.searchParams.set('utm_campaign', 'blog_share');
+  return tagged.toString();
+}
+
+const shareUrl = withShareUtm(absoluteUrl);
+const encodedUrl = encodeURIComponent(shareUrl);
+const encodedTitle = encodeURIComponent(title);
+
+// Platforms with a real web share intent. These render as <a> and open in
+// a fixed-size popup via the script below rather than navigating the page.
+// Pinterest's intent also accepts a `media` (image) param for a richer
+// pin card — omitted since this component wasn't given an image prop; the
+// link-only pin still works, just without a thumbnail.
+const intents = {
+  twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
+  facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+  linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+  pinterest: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedTitle}`,
+};
+
+// mailto: hands off to the OS mail client — a plain navigation, not a
+// window.open() popup target, so it's excluded from the data-popup set below.
+const mailBody = encodeURIComponent(`${description ? description + '\n\n' : ''}${shareUrl}`);
+const mailtoHref = `mailto:?subject=${encodedTitle}&body=${mailBody}`;
+---
+
+<div class="share-row" role="group" aria-label="Share this article" data-share-row data-share-url={shareUrl}>
+  <a
+    href={intents.twitter}
+    data-popup
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Share on Twitter"
+    title="Share on Twitter"
+  >
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
+    </svg>
+  </a>
+
+  <a
+    href={intents.facebook}
+    data-popup
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Share on Facebook"
+    title="Share on Facebook"
+  >
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M15 3h-2a4 4 0 0 0-4 4v3H7v4h2v7h4v-7h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+    </svg>
+  </a>
+
+  <a
+    href={intents.linkedin}
+    data-popup
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Share on LinkedIn"
+    title="Share on LinkedIn"
+  >
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V8h4v1.5A6 6 0 0 1 16 8z"/>
+      <rect x="2" y="9" width="4" height="12"/>
+      <circle cx="4" cy="4" r="2"/>
+    </svg>
+  </a>
+
+  <a
+    href={intents.pinterest}
+    data-popup
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Share on Pinterest"
+    title="Share on Pinterest"
+  >
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M9 17c1-3 1.5-5 1.5-7A2.5 2.5 0 1 1 15 11c0 2-1 4-3 4"/>
+    </svg>
+  </a>
+
+  <button type="button" data-action="instagram" aria-label="Copy link to share on Instagram" title="Copy link to share on Instagram">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="2" y="2" width="20" height="20" rx="5"/>
+      <circle cx="12" cy="12" r="4"/>
+      <circle cx="17.5" cy="6.5" r="1"/>
+    </svg>
+  </button>
+
+  <button type="button" data-action="tiktok" aria-label="Copy link to share on TikTok" title="Copy link to share on TikTok">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M9 3v12.5a3.5 3.5 0 1 1-2-3.16V9.5A6.5 6.5 0 1 0 13 16V9.03a6.86 6.86 0 0 0 4 1.27V7.3a4.83 4.83 0 0 1-4-4.3H9z"/>
+    </svg>
+  </button>
+
+  <a href={mailtoHref} aria-label="Share via email" title="Share via email">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="2.5" y="5" width="19" height="14" rx="2"/>
+      <path d="M3.5 6.5L12 13L20.5 6.5"/>
+    </svg>
+  </a>
+
+  <button type="button" data-action="copy" aria-label="Copy link" title="Copy link">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11 4.93"/>
+      <path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L13 19.07"/>
+    </svg>
+  </button>
+
+  <p class="toast" role="status" aria-live="polite" data-toast></p>
+</div>
+
+<script>
+  const root = document.querySelector('[data-share-row]');
+
+  if (root instanceof HTMLElement) {
+    const shareUrl = root.dataset.shareUrl ?? '';
+    const toast = root.querySelector('[data-toast]');
+    let toastTimer: number | undefined;
+
+    const showToast = (text: string) => {
+      if (!(toast instanceof HTMLElement)) return;
+      toast.textContent = text;
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        toast.textContent = '';
+      }, 2000);
+    };
+
+    const copyLink = async () => {
+      if (!shareUrl || !navigator.clipboard) return false;
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    // Twitter/Facebook/LinkedIn/Pinterest: intercept the click and open a
+    // fixed-size, centered popup instead of a full new tab.
+    root.querySelectorAll('[data-popup]').forEach((el) => {
+      el.addEventListener('click', (event) => {
+        const href = el.getAttribute('href');
+        if (!href) return;
+        event.preventDefault();
+        const width = 550;
+        const height = 420;
+        const left = window.screenX + (window.outerWidth - width) / 2;
+        const top = window.screenY + (window.outerHeight - height) / 2;
+        window.open(
+          href,
+          'share-window',
+          `width=${width},height=${height},left=${left},top=${top},noopener,noreferrer`
+        );
+      });
+    });
+
+    root.querySelector('[data-action="copy"]')?.addEventListener('click', async () => {
+      showToast((await copyLink()) ? 'Copied!' : 'Copy failed — copy the link manually.');
+    });
+
+    // Neither platform has a web share intent, so both copy the link and
+    // point the reader at what to do with it instead.
+    root.querySelector('[data-action="instagram"]')?.addEventListener('click', async () => {
+      showToast(
+        (await copyLink())
+          ? 'Link copied — paste it into your Instagram Story or caption.'
+          : 'Copy failed — copy the link manually.'
+      );
+    });
+
+    root.querySelector('[data-action="tiktok"]')?.addEventListener('click', async () => {
+      showToast(
+        (await copyLink())
+          ? 'Link copied — share it in your TikTok video or bio.'
+          : 'Copy failed — copy the link manually.'
+      );
+    });
+  }
+</script>
+
+<style>
+  .share-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 1rem;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+
+  @media (min-width: 48rem) {
+    .share-row {
+      gap: 0.875rem;
+    }
+  }
+
+  .share-row a,
+  .share-row button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    border-radius: 999px;
+    background-color: transparent;
+    color: var(--color-accent);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .share-row a:hover,
+  .share-row button:hover {
+    background-color: var(--color-brand);
+    color: var(--color-surface);
+  }
+
+  .share-row a:focus-visible,
+  .share-row button:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+
+  .toast {
+    flex-basis: 100%;
+    min-height: 1.125rem;
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-brand);
+  }
+</style>
