@@ -56,24 +56,37 @@ const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
 
     <OrganizationSchema />
     <WebSiteSchema />
+
+    <style>
+      .skip-link {
+        position: absolute;
+        top: -100%;
+        left: 1rem;
+        z-index: 100;
+        padding: 0.75rem 1.25rem;
+        background-color: var(--color-brand);
+        color: var(--color-surface);
+        border-radius: var(--radius-card);
+        font-weight: 600;
+        text-decoration: none;
+        transition: top 0.15s ease;
+      }
+
+      .skip-link:focus-visible {
+        top: 1rem;
+      }
+    </style>
   </head>
 
-<style>
-  .skip-link {
-    position: absolute;
-    top: -100%;
-    left: 1rem;
-    z-index: 100;
-    padding: 0.75rem 1.25rem;
-    background-color: var(--color-brand);
-    color: var(--color-surface);
-    border-radius: var(--radius-card);
-    font-weight: 600;
-    text-decoration: none;
-    transition: top 0.15s ease;
-  }
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
 
-  .skip-link:focus-visible {
-    top: 1rem;
-  }
-</style>
+    {chrome && <Header />}
+
+    <main id="content">
+      <slot />
+    </main>
+
+    {chrome && <Footer />}
+  </body>
+</html>
