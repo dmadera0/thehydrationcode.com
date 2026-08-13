@@ -69,6 +69,17 @@ const breadcrumbItems = [
         {updatedAt && <span>Updated {dateFormatter.format(updatedAt)}</span>}
         <span>{readingMinutes} min read</span>
       </div>
+
+      <!-- Share buttons below meta -->
+      <div class="share-wrapper">
+        <h2 class="sr-only">Share this article</h2>
+        <SocialShareButtons 
+          title={title}
+          url={canonicalUrl}
+          description={dek}
+        />
+      </div>
+
       <Image src={heroImage} alt={heroAlt} width={1200} height={675} class="hero-image" />
     </header>
 
@@ -77,18 +88,6 @@ const breadcrumbItems = [
     </div>
 
     <SourceList sources={sources} />
-
-    <!-- UPDATED: Added SocialShareButtons component (after SourceList, before FAQ).
-         Passes canonicalUrl, title, and dek to the share component.
-         Wrapped in a section with top border and padding to visually separate from sources. -->
-    <section class="share-section" aria-labelledby="share-heading">
-      <h2 id="share-heading" class="sr-only">Share this article</h2>
-      <SocialShareButtons 
-        title={title}
-        url={canonicalUrl}
-        description={dek}
-      />
-    </section>
 
     {faq && faq.length > 0 && (
       <section class="faq" aria-labelledby="faq-heading">
@@ -221,13 +220,9 @@ const breadcrumbItems = [
     font-style: italic;
   }
 
-  /* UPDATED: New styles for share section.
-     Matches the visual separation pattern of other post sections (faq, related-bottles, related-posts).
-     Top border creates clear break from SourceList; padding maintains consistent spacing. */
-  .share-section {
-    margin-block-start: 3rem;
-    padding-block-start: 1.5rem;
-    border-block-start: 1px solid var(--color-line);
+  /* Share wrapper in article header, positioned below meta information */
+  .share-wrapper {
+    margin-block-start: 1.25rem;
   }
 
   .sr-only {
