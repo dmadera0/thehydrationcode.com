@@ -19,7 +19,6 @@ const { title, description, ogImage, noindex = false, chrome = true } = Astro.pr
 
 const pageTitle = title === SITE.name ? title : `${title} — ${SITE.name}`;
 const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
-const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
 ---
 
 <!doctype html>
@@ -46,8 +45,8 @@ const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
     {ogImage && <meta name="twitter:image" content={new URL(ogImage, SITE.url).toString()} />}
 
     <!-- Google Analytics 4 -->
-    <script type="text/partytown" async src="https://www.googletagmanager.com/gtag/js?id=G-EB38E6PWE0"></script>
-    <script type="text/partytown">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EB38E6PWE0"></script>
+    <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       gtag('js', new Date());
