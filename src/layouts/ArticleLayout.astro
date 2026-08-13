@@ -4,6 +4,7 @@ import { getEntries } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import SourceList from '@components/content/SourceList.astro';
+import SocialShareButtons from '@components/content/SocialShareButtons.astro';
 import ArticleCard from '@components/content/ArticleCard.astro';
 import ArticleSchema from '@components/seo/ArticleSchema.astro';
 import FAQSchema from '@components/seo/FAQSchema.astro';
@@ -76,6 +77,18 @@ const breadcrumbItems = [
     </div>
 
     <SourceList sources={sources} />
+
+    <!-- UPDATED: Added SocialShareButtons component (after SourceList, before FAQ).
+         Passes canonicalUrl, title, and dek to the share component.
+         Wrapped in a section with top border and padding to visually separate from sources. -->
+    <section class="share-section" aria-labelledby="share-heading">
+      <h2 id="share-heading" class="sr-only">Share this article</h2>
+      <SocialShareButtons 
+        title={title}
+        url={canonicalUrl}
+        description={dek}
+      />
+    </section>
 
     {faq && faq.length > 0 && (
       <section class="faq" aria-labelledby="faq-heading">
@@ -206,6 +219,27 @@ const breadcrumbItems = [
     border-inline-start: 3px solid var(--color-line);
     color: var(--color-body);
     font-style: italic;
+  }
+
+  /* UPDATED: New styles for share section.
+     Matches the visual separation pattern of other post sections (faq, related-bottles, related-posts).
+     Top border creates clear break from SourceList; padding maintains consistent spacing. */
+  .share-section {
+    margin-block-start: 3rem;
+    padding-block-start: 1.5rem;
+    border-block-start: 1px solid var(--color-line);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
   }
 
   .faq {
