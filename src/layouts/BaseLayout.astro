@@ -11,7 +11,6 @@ interface Props {
   description: string;
   ogImage?: string;
   noindex?: boolean;
-  /** Set false for a bare shell with no Header/Footer (e.g. the /go redirect page). */
   chrome?: boolean;
 }
 
@@ -24,6 +23,15 @@ const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Google Analytics 4 - MUST be early in head -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EB38E6PWE0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-EB38E6PWE0');
+    </script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -43,15 +51,6 @@ const canonicalUrl = new URL(Astro.url.pathname, SITE.url).toString();
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     {ogImage && <meta name="twitter:image" content={new URL(ogImage, SITE.url).toString()} />}
-
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EB38E6PWE0"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-EB38E6PWE0');
-    </script>
 
     <OrganizationSchema />
     <WebSiteSchema />
