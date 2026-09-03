@@ -153,8 +153,8 @@ Recommended shape (adapt to the topic, don't follow mechanically):
    the 3–5 bullet answer for skimmers.
 3. **Body sections under `##` (H2) headings.** One idea per section. Every
    factual claim carries a `<Citation>` to a source in the frontmatter. Use
-   `<StatBlock>` to feature a single striking number, `<ComparisonTable>` for
-   head-to-head material, `<Callout>` for a caveat, warning, or key point
+   `<StatBlock>` to feature a single striking number, `<Callout>` for a
+   caveat, warning, or key point
    (including honest limitations of a cited study — acknowledging a study's
    critique makes the article MORE credible, not less).
 4. **Nuance / counterpoint section.** Where the evidence is contested or the
@@ -311,6 +311,10 @@ weaken any check or guard to force a build through.
 - Every source URL free to access and containing the claim it's cited for.
 - The three pillar values are fixed; do not invent a new pillar without a
   corresponding code change (which is out of scope for content work).
+- Never use `<ComparisonTable>`. It is not supported in auto-drafted articles
+  — the component's required props are commonly omitted by the drafting
+  model, which breaks the build. Use `<StatBlock>` or a plain markdown table
+  for any head-to-head material instead.
 
 ---
 
