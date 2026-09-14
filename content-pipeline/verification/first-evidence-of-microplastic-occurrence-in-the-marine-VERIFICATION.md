@@ -1,0 +1,44 @@
+# Verification report — Microplastics Reach the Arctic — and Humans Bring Them
+
+Source: First Evidence of Microplastic Occurrence in the Marine and Freshwater Environments in a Remote Polar Region of the Kola Peninsula and a Correlation with Human Presence — Biology, 2023 — DOI: 10.3390/biology12020259
+Verified real via Crossref: yes (not retracted)
+
+## Claims checked against source text
+
+| # | Claim | Status | Supporting quote |
+|---|---|---|---|
+| 1 | Microplastics turned up in every water sample collected from both the Barents Sea and tundra lakes | VERIFIED | "Microplastics were detected in all samples collected from the Barents Sea (<4800 items ·m−3) and the lakes (<3900 items·m−3)" |
+| 2 | Fibers made up 76% in the sea and 83% in the lakes | VERIFIED | "Fibers were found to be the main components of the microplastics detected and constituted 76–83%." |
+| 3 | The dominant materials were PET and semi-synthetic cellulosic rayon | VERIFIED | "Fibers made from polyethylene terephthalate (PET)—the most common thermoplastic polymer of the polyester family—and semi-synthetic cellulosic rayon were the most dominant." |
+| 4 | The likely sources were protective clothes, ropes, ship equipment, and fishing nets | VERIFIED | "This indicated that the source of ﬁber contamination may come from protective clothes, ropes, ship equipment, and ﬁshing nets." |
+| 5 | In the Barents Sea bays, contamination ranged from 1,500–4,170 fibers per cubic meter plus 420–1,600 fragments per cubic meter | VERIFIED | "The contamination detected was in the range of 1500–4170 ﬁbers·m−3 and 420–1600 fragments·m−3" |
+| 6 | In the lakes, fiber counts ran 1,100–3,300 per cubic meter | VERIFIED | "similar to those observed in the bays: 1100–3300 ﬁbers ·m−3" |
+| 7 | Microplastic items ranged 1,300–4,800 per cubic meter across all sites | VERIFIED | "The concentration of MPs in the water of the tundra lakes were similar to those observed in the bays, and varied from 1300 to 4800 items·m−3." |
+| 8 | Arctic waters were more contaminated than previously reported polar waters by one to two orders of magnitude | VERIFIED | "We found higher MP abundance in the waters of the Kola Peninsula than that reported for the Arctic polar waters (by one order of magnitude [ 35]; or two orders of magnitude [ 5,36])" |
+| 9 | Their fine 20-micron mesh captured smaller particles than the 125–330 micron nets used in earlier studies | VERIFIED | "In many studies, nets with a mesh of 125–330 µm have been used. In the current study, we used a dense net with a mesh of 20 µm. Finer ﬁltering mesh led to a larger number and smaller size of microplastics [38]." |
+| 10 | Fibers made up 76 ± 4% of microplastics in the sea | VERIFIED | "Fibers constituted the most abundant type of MP pollution (76± 4%)." |
+| 11 | Fibers made up 83 ± 2% in the lakes | VERIFIED | "Fibers constituted the most abundant type of MP pollution (83 ± 2%)." |
+| 12 | 97 ± 5% of sea fragments fell in the smallest size class (0.01–0.20 mm) | VERIFIED | "the small ones were the most prevalent (97± 5% of all fragments detected were in the range of 0.01–0.20 mm)" |
+| 13 | 93 ± 10% of lake fragments fell in the smallest size class | VERIFIED | "the small ones were dominant (93± 10% of all fragments detected were in the range of 0.01–0.20 mm; Figure 5b)" |
+| 14 | On average 67% of fibers in the bays and 60% in the lakes were PET | VERIFIED | "On average, 67% of the ﬁbers found in the bays and 60% of those found in the lakes made from this polymer." |
+| 15 | Around 70% of synthetic fibers by production volume are PET | VERIFIED | "Regarding production volume, 70% of synthetic ﬁbers are made of PET [48]." |
+| 16 | PET fibers are used in fleece, woven fabrics, sailcloth, and rope | VERIFIED | "Fibers made from PET are used to produce knitted and woven fabrics, including ﬂeece, Dacron, tergal (e.g., for sail cloth), and rope." |
+| 17 | The source materials were all observed in and around the field station | VERIFIED | "These source materials were all observed in and around the ﬁeld station." |
+| 18 | Rayon was the most common fiber (53%) detected in a True's beaked whale | VERIFIED | "rayon was found in guts of ﬁsh [ 55,56] and reported as the most common ﬁber (53%) detected in the True’s beaked whale" |
+| 19 | Even natural fibers may contain dyes, plasticizers, and flame retardants | NOT FOUND | "Even natural ﬁbers may contain additives, such as dyes, antioxidants, plasticizers, resins, and ﬂame retardants, which pose risks for the organisms that ingest them [58]." |
+| 20 | The number of microfibers fell significantly as distance from the field station grew (Pearson's r = −0.73, p = 0.02) | VERIFIED | "we noted a signiﬁcant negative correlation between the number of ﬁbers and the distance from the ﬁeld station (Pearson’s correlation, r =−0.73, p = 0.02; Figure 4B)" |
+| 21 | This is the first paper to demonstrate such a direct relationship between freshwater microplastic and human presence in a remote region | VERIFIED | "this is the ﬁrst paper to indicate such a direct relationship between the MP contamination level in freshwaters and human presence in a remote region of Kola Peninsula." |
+| 22 | The station houses only a few dozen people | VERIFIED | "The ﬁeld station is inhabited by a few dozen people." |
+| 23 | There are no other inhabited places for dozens of kilometers around | VERIFIED | "There are no other inhabited places within a radius of several dozen kilometers, and this area is characterized by a windy climate resulting from the main North Atlantic storm track [44,45]." |
+| 24 | The presence of microfibers in lakes 2–5 km away could mainly be explained by wind transport | VERIFIED | "The presence of microﬁbers in the studied lakes located 2–5 km away from the ﬁeld station in the Kola Peninsula could mainly be explained by wind transport." |
+| 25 | The Norwegian Current is likely responsible for the lack of correlations in the Barents Sea | VERIFIED | "The Norwegian Current is likely responsible for the lack of correlations found between MP contamination and the distance from the ﬁeld station to the studied bays of the Barents Sea." |
+| 26 | Microplastic contamination from the sampling method may account for around 12%, all fibers, mostly medium-sized | VERIFIED | "Microplastic contamination resulting from the sampling method may constitute 12%. We found only the ﬁbers. The medium ﬁbers dominated and constituted 62% of all detected in the control test." |
+| 27 | No microplastic was found during the laboratory air-exposure control | VERIFIED | "There were no microplastic contaminants found on the ﬁlters during air exposure." |
+| 28 | The net's own fibers were transparent, oval, 34.5 microns wide, distinct from the colored, ribbon-shaped, 10–24 micron field fibers | VERIFIED | "Its ﬁbers were transparent and oval in shape and 34.5 µm wide, compared to 10–24 µm wide and mostly different in color and ribbon-shaped microﬁbers from the ﬁeld samples." |
+| 29 | The Barents Sea is one of the most productive seas in the world, with copepods, cod, capelin, and herring, up to sea birds, seals, and whales | VERIFIED | "Zooplankton species are the basis for the rich assemblage of higher trophic level organisms: shrimps, commercial ﬁsh stocks such as cod ( Gadus morhua), capelin ( Mallotus villosus) and herring (Clupea harengus), sea birds, seals, and whales [60]." |
+| 30 | Microplastic in the productive Barents Sea poses a threat at all levels of the food chain including humans | VERIFIED | "Microplastic pollution in the highly productive Barents Sea poses a threat to animals at all levels of the food chain, including humans." |
+| 31 | There is documented trophic transfer of microplastic from mussels to crabs | NOT FOUND | "Farrell and Nelson [ 67] conﬁrmed the trophic transfer of MP (polystyrene of 0.5 mm in size) from mussels (Mytilus edulis) to crabs (Carcinus maenas) in a laboratory study." |
+| 32 | Polar animals' fat-rich tissues may make them particularly prone to toxicological effects | VERIFIED | "polar animals’ fat-rich tissues may make them particularly prone to toxicological effects." |
+| 33 | The authors recommend sorting waste, securing the landfill, and taking plastic waste to the city for processing | VERIFIED | "(1) increasing environmental awareness among residents and station users to sort waste; (2) reorganizing the landﬁll, storing plastic waste in a separate pile, and making it easier to secure it; (3) regularly securing waste at the landﬁll, e.g., by covering the pile with a layer of soil/sand; and (4) suggesting that visitors to the station take plastic waste with them to the city, where there are facilities to process it." |
+
+31 of 33 claims auto-verified. Any NOT FOUND or any claim not listed here needs manual verification against the source PDF before merging.
