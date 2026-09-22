@@ -1,0 +1,38 @@
+# Verification report — Where Microplastics End Up in Your Body: What the Evidence Shows
+
+Source: Potential Health Impact of Microplastics: A Review of Environmental Distribution, Human Exposure, and Toxic Effects — Environment &amp; Health, 2023 — DOI: 10.1021/envhealth.3c00052
+Verified real via Crossref: yes (not retracted)
+
+## Claims checked against source text
+
+| # | Claim | Status | Supporting quote |
+|---|---|---|---|
+| 1 | Microplastics are plastic fragments under 5 mm; below 1 μm they're called nanoplastics | VERIFIED | "Microplastics refer to plastic fragments and particles with a diameter of less than 5 mm. They are called nanoplastics when the diameter is less than 1 μm." |
+| 2 | In 2019 global annual output of plastic reached 460 million tons, only 9% recycled, projected to reach 1.2 billion tons by 2060 | VERIFIED | "In 2019, the global annual output of plastic products reached 460 million tons, only 9% of which are recycled, and it is estimated that it will reach 1.2 billion tons by 2060." |
+| 3 | Microplastics detected from Antarctica to the Arctic, up to Mount Everest, and down to the Mariana Trench | VERIFIED | "Microplastics are detected from the south to Antarctica, 8 north to the Arctic, 9 up to the peak of Mount Everest, 10 and down to the Mariana Trench." |
+| 4 | Oral intake is the main exposure route among the three common ways | VERIFIED | "Oral intake, inhalation, and skin contact are the common ways (Figure 1). Among them, oral intake is the main exposure route." |
+| 5 | Intake of plastic particles from food is 39,000–52,000 particles per person per year | VERIFIED | "the intake of plastic particles in human body is 39,000−52,000 particles/person/ year." |
+| 6 | Annual consumption estimates range from 74,000 to 121,000 particles when inhalation is included | VERIFIED | "It is estimated that annual microplastics consumption ranges from 74,000 and 121,000 particles when both oral intake and inhalation are considered." |
+| 7 | People who order take-out 4-7 times weekly may ingest 12–203 pieces of microplastics from containers | VERIFIED | "It is estimated that people who order take-out food 4−7 times weekly may intake 12−203 pieces of microplastics through containers." |
+| 8 | Paris outdoor air median 5.4 fibers/m3 versus 0.9 fibers/m3 indoors | VERIFIED | "the median concentration of microplastic fibers is 5.4 fibers/m 3 in the outdoor air and 0.9 fibers/m 3 in the indoor air in Paris." |
+| 9 | Microplastics detected in lung tissue smaller than those in the atmosphere | VERIFIED | "The size of microplastics detected in lung tissue is smaller than that in the atmosphere." |
+| 10 | Microplastics detected in human blood | VERIFIED | "However, researchers detect the existence of microplastics in human blood." |
+| 11 | Microplastics found in 15 human biological components including spleen, liver, colon, lung, feces, placenta, breastmilk | VERIFIED | "the existence of microplastics are found in 15 human biological components, such as the spleen, liver, colon, lung, feces, placenta, breastmilk, etc." |
+| 12 | Colon (28.1 particles/g) and liver (4.6 particles/g) had highest content | VERIFIED | "The organs with high content are the colon (28.1 particles/g) and liver (4.6 particles/g)." |
+| 13 | PET in infant feces is ten times higher than in adults | VERIFIED | "The concentration of PET in infant feces (5700−82,000 ng/g, median: 36,000 ng/g) is ten times higher than that in adults" |
+| 14 | Toxic effects include oxidative stress, DNA damage, organ dysfunction, metabolic disorder, immune response, neurotoxicity, reproductive and developmental toxicity, observed in cells, organoids, and animals | VERIFIED | "These effects consist of oxidative stress, DNA damage, organ dysfunction, metabolic disorder, immune response, neuro- toxicity, as well as reproductive and developmental toxicity." |
+| 15 | Cytotoxicity varies with cell type, particle size, dose, charge, exposure time, causing cell death by oxidative stress and membrane damage | VERIFIED | "Cytotoxicity of microplastics varies with cell type, particle size, dose, charge, exposure time, type, and additives, causing cell deaths mainly by oxidative stress and membrane damage." |
+| 16 | Larger particles less likely to enter cells; randomly shaped fragments cause more harm than spheres | VERIFIED | "Larger particles are less likely to enter cells and result in lighter oxidative stress. 67 Compared with spherical microplastics, randomly shaped fragments cause more harmful physical effects." |
+| 17 | Microplastics can adsorb other pollutants especially heavy metals and hydrophobic organic chemicals which may enhance toxicity | VERIFIED | "microplastics may act as the vector adsorbing other pollutants, especially heavy metals and hydrophobic organic chemicals (HOCs), which may enhance toxicity." |
+| 18 | Experiments usually use commercially synthesized PS and PE at high exposure doses | VERIFIED | "the current experiments usually use PS and PE as models, and most of them are commercially synthesized, which means the type of microplastic is unitary." |
+| 19 | Almost all toxicity studies use experimental models and harm to the human body is still unclear; epidemiological and clinical data needed | VERIFIED | "Almost all the studies on the toxicity of microplastics use experimental models, and the harm to the human body is still unclear. Epidemiological and clinical data needs to be collected." |
+| 20 | Fecal microplastic concentration in IBD patients significantly higher than healthy people | VERIFIED | "the fecal microplastic concentration in inflammatory bowel disease (IBD) patients is significantly higher than that in healthy people" |
+| 21 | Microplastics found in cirrhotic liver tissue at higher levels than healthy liver | VERIFIED | "the existence of microplastics in cirrhotic liver tissues, whose concentration is higher compared to that of liver samples from healthy individuals." |
+| 22 | Commonly used analytical methods detect microplastics only at micron level, making nanoplastics difficult to analyze | VERIFIED | "the commonly used analytical means can detect microplastics only at the micron level, and it is difficult to effectively analyze microplastics with smaller size (nanoplastics) and greater potential harm" |
+| 23 | Airborne microplastics are mainly PE, PS, and PET particles and fibers | VERIFIED | "Microplastics in the air are mainly PE, PS, and PET particles and fibers" |
+| 24 | Microplastics not considered to pass through the skin barrier but can increase exposure by depositing on skin | VERIFIED | "Microplastics are usually considered not to pass through the skin barrier, 45 but they can still increase exposure risk by depositing on the skin." |
+| 25 | Plastic additives may be absorbed during dermal exposure | VERIFIED | "During the dermal exposure of microplastics, some typical plastic additives, including brominated flame retardants (BFRs), bisphenols (BPs), triclosan (TCS), and phthalates, may be absorbed." |
+| 26 | Microplastic detected in human thrombus samples | VERIFIED | "detects the existence of microplastic in human aortic dissection thrombus samples and human acute arterial embolism samples." |
+| 27 | Microplastics may be associated with the formation of many chronic diseases | VERIFIED | "These results suggest that microplastics may be associated with the formation of many chronic diseases, which may be harmful to human health." |
+
+27 of 27 claims auto-verified. Any NOT FOUND or any claim not listed here needs manual verification against the source PDF before merging.
